@@ -6,23 +6,23 @@ public class Test {
     private double climateCoefficient; // A
 
 
-    public void main() {
+    public static void main(String[] args) {
         LogInformation[] logInformations = new LogInformation[88];
         int counter = 0;
         for(int startMiddleMeasureBudgetPart = 0;startMiddleMeasureBudgetPart <=100;startMiddleMeasureBudgetPart+=10){
-            for(double startClimateCoefficient = 1.0;startClimateCoefficient<=1.7;startClimateCoefficient+=0.1, counter++) {
-                this.climateCoefficient=startClimateCoefficient;
-                simulation(new Climate(climateCoefficient), startMiddleMeasureBudgetPart, logInformations[counter]);
+            for(int step = 0; step <= 7; step++, counter++) {
+                logInformations[counter] = new LogInformation();
+                BudgetSimulation.simulation(new Climate(1.0 + step / 10.0), startMiddleMeasureBudgetPart, logInformations[counter]);
             }
         }
-        evaluation(logInformations);
+        new Test().evaluation(logInformations);
     }
 
     public void evaluation(LogInformation[] logInformations) {
         int score = 200;
         int counter = 0;
         for(int startMiddleMeasureBudgetPart = 0;startMiddleMeasureBudgetPart <=100;startMiddleMeasureBudgetPart+=10){
-            for(double startClimateCoefficient = 1.0;startClimateCoefficient<=1.7;startClimateCoefficient+=0.1, counter++) {
+            for(int step = 0; step <= 7; step++, counter++) {
                 for (Integer day : logInformations[counter].getShortMeasureOvershoot().values()) {
                     score -= 10 - day/9;
                 }

@@ -5,10 +5,12 @@ public class LogInformation {
 
     private double climateCoefficient;
     private Map<Integer, Integer> shortMeasureOvershoot;
+    private Map<Integer, Double> shortfallAmount;
     private double[] avgShortMeasure;
 
     public LogInformation() {
         this.shortMeasureOvershoot = new HashMap<>();
+        this.shortfallAmount = new HashMap<>();
         this.avgShortMeasure = new double[10];
     }
 
@@ -26,6 +28,14 @@ public class LogInformation {
 
     public void addShortMeasureOvershoot(int year, int day) {
         this.shortMeasureOvershoot.put(year, day);
+    }
+
+    public Map<Integer, Double> getShortfallAmount() {
+        return shortfallAmount;
+    }
+
+    public void addShortfallAmount(int year, double amount) {
+        this.shortfallAmount.put(year, amount);
     }
 
     public double[] getAvgShortMeasure() {
