@@ -47,8 +47,8 @@ public class Weather {
         WaterReserve = RandomBetween(WATER_MIN, WATER_MAX);
     }
 
-    /** Moves to the next day. The abstraction drift is a random change drawn
-     from -maxDrift, +maxDrift for each value, it is applied to the previous normal weather (PNW) */
+    /** Moves to the next day. The drift is a random change between -maxDrift and +maxDrift for each value,
+     * it is applied to the previous normal weather (PNW) */
     public void nextDay() {
         double pnwTemp = TopTemp;
         double pnwWaterReserve = WaterReserve;
