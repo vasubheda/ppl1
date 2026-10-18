@@ -12,7 +12,7 @@ public class Test {
             for(double startClimateCoefficient = 1.0;startClimateCoefficient<=1.7;startClimateCoefficient+=0.1, counter++) {
                 this.climateCoefficient=startClimateCoefficient;
                 simulation(randomWeather(), 100 , startMiddleMeasureBudgetPart);
-
+                logInformations[counter] = currentLogInformation;
             }
         }
     }
