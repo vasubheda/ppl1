@@ -1,5 +1,3 @@
-import java.util.List;
-
 public class Test {
     private final double MaxTopTemp = 40;
     private final double MinTopTemp = -10;
