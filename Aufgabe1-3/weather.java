@@ -11,8 +11,8 @@ import java.util.Random;
  * Modularization units inside this weather class:
  *  Module part is holding the fixed rules, the ranges and limit that never changes - constants (value ranges, maximum drift) and the
  *  static helper EnforceRange() which enforces the range.
- *  Object part holds the current days values and the behaviour that updates over time - the instance fields topTemperature and
- *  waterReserve together with startNewYear(), nextDay() and the getters.
+ *  Object part holds the current days values and the behaviour that updates over time - the instance fields TopTemp and
+ *  WaterReserve, nextDay() and the getters.
  *
  * Responsibility : pick a random start value from a fixed range, draw a random daily drift, apply it to the previous normal weather (PNW) and
  * expose the current day's values via getters. The class does not know how many
