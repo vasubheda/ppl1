@@ -20,7 +20,7 @@ public class Test {
 
     public void evaluation(LogInformation[] logInformations) {
         int points;
-        int score;
+        int score =;
         int counter = 0;
         for(int startMiddleMeasureBudgetPart = 0;startMiddleMeasureBudgetPart <=100;startMiddleMeasureBudgetPart+=10){
             for(double startClimateCoefficient = 1.0;startClimateCoefficient<=1.7;startClimateCoefficient+=0.1, counter++) {
