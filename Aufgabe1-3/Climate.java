@@ -21,9 +21,13 @@ import java.util.List;
  */
 
 public class Climate {
+    // Years of history that count towards the long term average (LX)
     private static final int WINDOW_YEARS = 10;
-    private static final double GROWTH_WITHOUT_CAUSE = 1.005; // Yearly change of A if nothing goes into cause fighting - A grows
-    private static final double REDUCTION_PER_SHARE = 0.008; // How the cause fighting slows or reverse the growth of A
+    // Yearly change of A if nothing goes into cause fighting (A grows)
+    private static final double GROWTH_WITHOUT_CAUSE = 1.005;
+    // How strongly cause fighting slows or reverse the growth of A
+    private static final double REDUCTION_PER_SHARE = 0.008;
+    // Warming never turns into cooling below the normal weather
     private static final double A_MIN = 1.0;
     private double a;
     private final List<Double> CauseShares = new ArrayList<>();
@@ -55,7 +59,7 @@ public class Climate {
     /**
      * Represents the yearly reaction of the climate to past causefighting.
      * Takes nothing but uses the recorded shares of the last ten years (LX - long term avarage);
-     * gives back nothing, A is changed: more cause fighting means A grows slower.
+     * gives back nothing, A is changed: more cause fighting means A grows slower or shrinks.
      */
     public void UpdateA() {
         int count = Math.min(WINDOW_YEARS, CauseShares.size());

@@ -4,6 +4,7 @@ import java.util.Random;
  * Done by Dhananjay Sharma
  * AI use - Cluade chat(conversion mode) is used starting from the translating the excercise and course Script to English till the end untill
  * I fully understand theexercise. I shared my plan which was discussed with grp members before.
+ * AI suggested the enforce range method to use.
  *
  * Weather have two variables: daily high temperature and water reserve.
  *
