@@ -3,15 +3,20 @@ import java.util.Map;
 
 
 /*Allgemeine Informationen
-    Simon Hahn Use of Ai: I used it to explain the LVA slides too me how I should I go about to solve the task Link: https://claude.ai/share/b80245ae-9583-4b03-9ffa-60460b6ecada
+    Arbeitaufteilung:
+    Simon: main, evaluation, LoginInformation
+    Vishwas: YearBudget, BudgetSimulation, printEdgeCase, printSummary
+    Jay: Climate, Weather
 
-
+    Simon Hahn Use of Ai: I used it to explain the LVA slides to me and how I should go about to solve the task Link: https://claude.ai/share/b80245ae-9583-4b03-9ffa-60460b6ecada
  */
 
 
-/* Modularisierungseinheiten dieser Klasse:
-
-
+ /*
+    Modulisationunit of the class:
+    Modul: the class is a modul because it not used to create objects
+    Abstraktion: This class is responsible for starting the simulation processes with the required starting parameters.
+    it also evaluates the result and finds the best M
  */
 
 public class Test {
@@ -22,11 +27,11 @@ public class Test {
      * [M:0-100 in 10 steps]
      * [88 times in whole]
      * and initializises simulation of BudgetSimulation
-     * after every simulation 9is over it gives an 88 long Array of Objects from the class LogInfomation to the evalution method
+     * after every simulation is over it gives an 88 long Array of Objects from the class LogInfomation to the evalution method
      * precondition: class {@link BudgetSimulation} with method {@link BudgetSimulation#simulation(Climate, int, LogInformation)}, and method {@link #evaluation(LogInformation[])}
      */
 
-    public void main() {
+    public static void main(String[] args) {
         printEdgeCase(0, 1.0);
         printEdgeCase(100, 1.7);
         printEdgeCase(0, 1.7);
@@ -49,7 +54,7 @@ public class Test {
      * precondition: Input Array of logInfomations
      */
 
-    public void evaluation(LogInformation[] logInformations) {
+    public static void evaluation(LogInformation[] logInformations) {
         double[] objective = new double[11];
         for(LogInformation logInformation : logInformations) {
             int points = 1000;
@@ -64,6 +69,8 @@ public class Test {
                 points = 0;
             }
             objective[logInformation.getStartMiddleMeasureBudgetPart() / 10] += points / 8.0;
+            /*int score = points/100;
+            System.out.println("Die Simulation mit Anfangs A:" + logInformation.getStartClimateCoefficient() + ", M:" + logInformation.getStartMiddleMeasureBudgetPart() + ", erzielte eine Punktzahl:" + points + " von möglichen 1000 welches einen score von:" + score + " ergibt [0-10]");*/
         }
         int best = 0;
         for (int i = 1; i < objective.length; i++) {
@@ -79,7 +86,7 @@ public class Test {
      * precondition: logInformations holds the runs of that M among others
      */
 
-    private void printSummary(LogInformation[] logInformations, int m, double objective) {
+    private static void printSummary(LogInformation[] logInformations, int m, double objective) {
         double aMin = Double.MAX_VALUE, aMax = 0, fundsMin = Double.MAX_VALUE, fundsMax = 0, shortMax = 0;
         int yearsMin = Integer.MAX_VALUE, yearsMax = 0;
         for (LogInformation log : logInformations) {
@@ -112,7 +119,7 @@ public class Test {
      * the 10 decade averages of the immediate funds and the shortfalls (highlighted).
      */
 
-    private void printEdgeCase(int m, double a) {
+    private static void printEdgeCase(int m, double a) {
         LogInformation log=new LogInformation(a, m);
         BudgetSimulation.simulation(new Climate(a), m, log);
         System.out.println("Edge case: M = " + m + "%, start A = " + a);

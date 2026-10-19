@@ -10,9 +10,10 @@ import java.util.Map;
  * precondition: the logInfomation has to be initalized with the sterting values of A and M so they can be identified and used in the {@link Test#evaluation(LogInformation[])}
  */
 
-/*
+ /*
     Modulisationunit of the class:
-    Objekt: all class variables are object only specific parameters
+    Object: all class variables are object because there are 88 different logs fromm 88 different simulations
+    Abstraktion: This class is responsible for storing the recorded results of the simulation to be used in the evaluation
  */
 
 
@@ -46,13 +47,25 @@ public class LogInformation {
         return shortMeasureOvershoot;
     }
 
+    /**
+     * this method is for logging when (what year and on what day did this happen) the budget is overshot from the short-term costs
+     * the method should only be used once a year on the day it happens
+     * Possible values: year:1-100, day:1-90
+     */
+
     public void addShortMeasureOvershoot(int year, int day) {
         this.shortMeasureOvershoot.put(year, day);
     }
 
+
+
     public Map<Integer, Double> getShortfallAmount() {
         return shortfallAmount;
     }
+
+    /**
+     * this method stores for what amount that year was overshot
+     */
 
     public void addShortfallAmount(int year, double amount) {
         this.shortfallAmount.put(year, amount);
