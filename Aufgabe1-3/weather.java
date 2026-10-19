@@ -56,10 +56,6 @@ public class Weather {
         TopTemp = EnforceRange(pnwTemp +temperatureDrift, TEMP_MIN, TEMP_MAX);
         WaterReserve = EnforceRange( pnwWaterReserve + waterDrift, WATER_MIN, WATER_MAX);
     }
-    /** Returns the current day's top temperature and will be used for the simulation */
-    public double getTopTemp() {
-        return TopTemp;
-    }
     /** Returns the current day's water reserve and will be used for silmulation */
     public double getWaterReserve() {
         return WaterReserve;
@@ -72,5 +68,9 @@ public class Weather {
     /** keeps a value inside [lo, hi] so that the normal weather always stays in the same range */
     private static double EnforceRange(double v, double lo, double hi) {
         return Math.max(lo, Math.min(hi, v));
+    }
+    /** Returns the current day's top temperature and will be used for the simulation */
+    public double getTopTemp() {
+        return TopTemp;
     }
 }
