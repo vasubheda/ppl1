@@ -20,6 +20,10 @@ public class Test {
      */
 
     public void main() {
+        printEdgeCase(0, 1.0);
+        printEdgeCase(100, 1.7);
+        printEdgeCase(0, 1.7);
+
         LogInformation[] logInformations = new LogInformation[88];
         int counter = 0;
         for(int startMiddleMeasureBudgetPart = 0;startMiddleMeasureBudgetPart <=100;startMiddleMeasureBudgetPart+=10){
@@ -39,12 +43,11 @@ public class Test {
      */
 
     public void evaluation(LogInformation[] logInformations) {
-        int points;
-        int score;
+        double[] objective = new double[11];
         for(LogInformation logInformation : logInformations) {
-            points = 1000;
-            for (int day : logInformation.getShortMeasureOvershoot().values()) {
-                points -= 10 - day/18;
+            int points = 1000;
+            for (double amount : logInformation.getShortfallAmount().values()) {
+                points -= 5 + (int) (amount/5.0);
             }
             for (double avg : logInformation.getAvgShortMeasure()) {
                 points -= (int) (avg/2.0);
@@ -53,8 +56,76 @@ public class Test {
             if(points < 0) {
                 points = 0;
             }
-            score = points/100;
-            System.out.println("Die Simulation mit Anfangs A:" + logInformation.getStartClimateCoefficient() + ", M:" + logInformation.getStartMiddleMeasureBudgetPart() + ", erzielte eine Punktzahl:" + points + " von möglichen 1000 welches einen score von:" + score + " ergibt [0-10]");
+            objective[logInformation.getStartMiddleMeasureBudgetPart() / 10] += points / 8.0;
         }
+        int best = 0;
+        for (int i = 1; i < objective.length; i++) {
+            if (objective[i] > objective[best]) {
+                best = i;
+            }
+        }
+        printSummary(logInformations, best * 10, objective[best]);
+    }
+
+    /**
+     * Prints the value ranges over all start values of A for the given M.
+     * precondition: logInformations holds the runs of that M among others
+     */
+
+    private void printSummary(LogInformation[] logInformations, int m, double objective) {
+        double aMin = Double.MAX_VALUE, aMax = 0, fundsMin = Double.MAX_VALUE, fundsMax = 0, shortMax = 0;
+        int yearsMin = Integer.MAX_VALUE, yearsMax = 0;
+        for (LogInformation log : logInformations) {
+            if (log.getStartMiddleMeasureBudgetPart() != m) {
+                continue;
+            }
+            aMin = Math.min(aMin, log.getClimateCoefficient());
+            aMax = Math.max(aMax, log.getClimateCoefficient());
+            for (double avg : log.getAvgShortMeasure()) {
+                fundsMin = Math.min(fundsMin, avg);
+                fundsMax = Math.max(fundsMax, avg);
+            }
+            int years = log.getShortfallAmount().size();
+            yearsMin = Math.min(yearsMin, years);
+            yearsMax = Math.max(yearsMax, years);
+            for (double amount : log.getShortfallAmount().values()) {
+                shortMax = Math.max(shortMax, amount);
+            }
+        }
+        System.out.println("Best M according to the objective function: " + m + "% (objective value " + Math.round(objective) + " of 1000)");
+        System.out.println("Summary over start values of A from 1.0 to 1.7 with M = " + m + "%:");
+        System.out.printf("  A after 100 years: from %.3f to %.3f%n", aMin, aMax);
+        System.out.printf("  Immediate funds per 10 years: from %.2f%% to %.2f%%%n", fundsMin, fundsMax);
+        System.out.println("  Years with a shortfall: from " + yearsMin + " to " + yearsMax);
+        System.out.printf("  Largest shortfall: %.2f%%%n", shortMax);
+    }
+
+    /**
+     * Runs one simulation for the given M and start A and prints A after 100 years,
+     * the 10 decade averages of the immediate funds and the shortfalls (highlighted).
+     */
+
+    private void printEdgeCase(int m, double a) {
+        LogInformation log=new LogInformation(a, m);
+        BudgetSimulation.simulation(new Climate(a), m, log);
+        System.out.println("Edge case: M = " + m + "%, start A = " + a);
+        System.out.printf("A after 100 years : %.3f%n", log.getClimateCoefficient());
+        System.out.println("Immediate funds, average per 10 years (% of yearly budget):");
+        double[] avg=log.getAvgShortMeasure();
+        for (int i = 0;i < avg.length;i++) {
+            System.out.printf(" years %3d-%3d: %6.2f%%%n", i*10 + 1, i*10 + 10, avg[i]);
+        }
+        if (log.getShortfallAmount().isEmpty()) {
+            System.out.println("Shortfalls: none");
+        } else {
+            System.out.println("Shortfalls (need for immediate measures exceeds the budget):");
+            for (int year =1;year<=100; year++) {
+                Double amount = log.getShortfallAmount().get(year);
+                if (amount != null) {
+                    System.out.printf("  !!!year %3d: exceeded by %.2f%%%n", year, amount);
+                }
+            }
+        }
+        System.out.println();
     }
 }
