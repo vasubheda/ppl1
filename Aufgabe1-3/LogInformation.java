@@ -1,6 +1,22 @@
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class to record results of simulation
+ * it has to record following things:
+ * the climateCoefficient after 100years of simulation
+ * If the Budget overshoots so remainingBudget<0 it has to record what year, day and how much
+ * The avarage spending for short-term measures each 10 years total of 100 so in whole 10
+ * precondition: the logInfomation has to be initalized with the sterting values of A and M so they can be identified and used in the {@link Test#evaluation(LogInformation[])}
+ */
+
+/*
+    Modulisationunit of the class:
+    Objekt: all class variables are object only specific parameters
+ */
+
+
+
 public class LogInformation {
 
     private final double startClimateCoefficient;
