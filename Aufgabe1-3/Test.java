@@ -49,9 +49,9 @@ public class Test {
 
     /**
      * Gets an Array of 88 Objects from the class LogInformation
-     * uses the information to calculate points and on the basis of the points it gets a score from 0-10
-     * It Displays the starting parameters and the coresponding points and scores
-     * precondition: Input Array of logInfomations
+     * uses the information to calculate points and the best M over all Simulations
+     * It gives the logInformations and the coresponding points for the best M to the method printSummary
+     * precondition: Input Array of logInfomations not null (simulation already ran to put input in)
      */
 
     public static void evaluation(LogInformation[] logInformations) {
