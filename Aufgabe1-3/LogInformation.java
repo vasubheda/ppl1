@@ -3,12 +3,16 @@ import java.util.Map;
 
 public class LogInformation {
 
+    private final double startClimateCoefficient;
+    private final int startMiddleMeasureBudgetPart;
     private double climateCoefficient;
     private Map<Integer, Integer> shortMeasureOvershoot;
     private Map<Integer, Double> shortfallAmount;
     private double[] avgShortMeasure;
 
-    public LogInformation() {
+    public LogInformation(double startClimateCoefficient, int startMiddleMeasureBudgetPart) {
+        this.startClimateCoefficient = startClimateCoefficient;
+        this.startMiddleMeasureBudgetPart = startMiddleMeasureBudgetPart;
         this.shortMeasureOvershoot = new HashMap<>();
         this.shortfallAmount = new HashMap<>();
         this.avgShortMeasure = new double[10];
@@ -48,5 +52,13 @@ public class LogInformation {
 
     public void addAvgShortMeasure(double avgShortMeasure, int index) {
         this.avgShortMeasure[index] = avgShortMeasure;
+    }
+
+    public double getStartClimateCoefficient() {
+        return startClimateCoefficient;
+    }
+
+    public int getStartMiddleMeasureBudgetPart() {
+        return startMiddleMeasureBudgetPart;
     }
 }
