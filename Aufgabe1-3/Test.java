@@ -9,6 +9,14 @@ import java.util.Map;
     Jay: Climate, Weather
 
     Simon Hahn Use of Ai: I used it to explain the LVA slides to me and how I should go about to solve the task Link: https://claude.ai/share/b80245ae-9583-4b03-9ffa-60460b6ecada
+
+    Vishwas Vikram Bheda Use of Ai:
+    - I used claude to translate the assignment in Englih, then I used ChatGPT to clear some doubts and approaches.
+    - I used AI to understand how to use the Weather.java and Climate.java classes to integrate it into my simulation, the suggestions from AI include line 15, 19, 20, 25, 31, 32
+    - I used AI to help me format some print messages in printEdgeCase and printSummary in Test, so that the output is formatted consistently.
+    Link to Claude : https://claude.ai/share/4b05c785-2a51-4e75-9cf7-d765185d23eb
+    Link to ChatGPT : https://chatgpt.com/share/6ad5cd92-82b4-83eb-a6e7-051d9122f3a5
+
  */
 
 
@@ -82,41 +90,41 @@ public class Test {
     }
 
     /**
-     * Prints the value ranges over all start values of A for the given M.
-     * precondition: logInformations holds the runs of that M among others
+     * This prints the value ranges over all start values of A for the given M.
+     * The condition is that logInformations must hold the runs of that M among others.
      */
 
     private static void printSummary(LogInformation[] logInformations, int m, double objective) {
-        double aMin = Double.MAX_VALUE, aMax = 0, fundsMin = Double.MAX_VALUE, fundsMax = 0, shortMax = 0;
-        int yearsMin = Integer.MAX_VALUE, yearsMax = 0;
+        double aMin=Double.MAX_VALUE, aMax=0, fundsMin=Double.MAX_VALUE, fundsMax =0, shortMax =0;
+        int yearsMin =Integer.MAX_VALUE, yearsMax = 0;
         for (LogInformation log : logInformations) {
             if (log.getStartMiddleMeasureBudgetPart() != m) {
                 continue;
             }
-            aMin = Math.min(aMin, log.getClimateCoefficient());
-            aMax = Math.max(aMax, log.getClimateCoefficient());
-            for (double avg : log.getAvgShortMeasure()) {
-                fundsMin = Math.min(fundsMin, avg);
-                fundsMax = Math.max(fundsMax, avg);
+            aMin =Math.min(aMin, log.getClimateCoefficient());
+            aMax =Math.max(aMax, log.getClimateCoefficient());
+            for (double avg: log.getAvgShortMeasure()) {
+                fundsMin =Math.min(fundsMin, avg);
+                fundsMax= Math.max(fundsMax, avg);
             }
-            int years = log.getShortfallAmount().size();
-            yearsMin = Math.min(yearsMin, years);
-            yearsMax = Math.max(yearsMax, years);
+            int years =log.getShortfallAmount().size();
+            yearsMin =Math.min(yearsMin,years);
+            yearsMax = Math.max(yearsMax,years);
             for (double amount : log.getShortfallAmount().values()) {
-                shortMax = Math.max(shortMax, amount);
+                shortMax=Math.max(shortMax, amount);
             }
         }
-        System.out.println("Best M according to the objective function: " + m + "% (objective value " + Math.round(objective) + " of 1000)");
+        System.out.println("Best M, according to the objective function: " + m + "% (objective value " + Math.round(objective) + " of 1000)");
         System.out.println("Summary over start values of A from 1.0 to 1.7 with M = " + m + "%:");
-        System.out.printf("  A after 100 years: from %.3f to %.3f%n", aMin, aMax);
-        System.out.printf("  Immediate funds per 10 years: from %.2f%% to %.2f%%%n", fundsMin, fundsMax);
-        System.out.println("  Years with a shortfall: from " + yearsMin + " to " + yearsMax);
-        System.out.printf("  Largest shortfall: %.2f%%%n", shortMax);
+        System.out.printf(" A after 100 years: from %.3f to %.3f%n", aMin, aMax);
+        System.out.printf(" Immediate funds per 10 years: from %.2f%% to %.2f%%%n", fundsMin, fundsMax);
+        System.out.println(" Years with a shortfall: from " + yearsMin + " to " + yearsMax);
+        System.out.printf(" Largest shortfall: %.2f%%%n", shortMax);
     }
 
     /**
-     * Runs one simulation for the given M and start A and prints A after 100 years,
-     * the 10 decade averages of the immediate funds and the shortfalls (highlighted).
+     * It runs one simulation for the given M, start A and then prints A after 100 years.
+     * The 10 decade averages of immediate funds and shortfalls are printed as well.
      */
 
     private static void printEdgeCase(int m, double a) {
