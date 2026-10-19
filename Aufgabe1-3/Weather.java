@@ -4,7 +4,6 @@ import java.util.Random;
  * Done by Dhananjay Sharma
  * AI use - Cluade chat(conversion mode) is used starting from the translating the excercise and course Script to English till the end untill
  * I fully understand theexercise. I shared my plan which was discussed with grp members before.
- * AI suggested the enforce range method to use.
  *
  * Weather have two variables: daily high temperature and water reserve.
  *
@@ -57,10 +56,6 @@ public class Weather {
         TopTemp = EnforceRange(pnwTemp +temperatureDrift, TEMP_MIN, TEMP_MAX);
         WaterReserve = EnforceRange( pnwWaterReserve + waterDrift, WATER_MIN, WATER_MAX);
     }
-    /** Returns the current day's top temperature and will be used for the simulation */
-    public double getTopTemp() {
-        return TopTemp;
-    }
     /** Returns the current day's water reserve and will be used for silmulation */
     public double getWaterReserve() {
         return WaterReserve;
@@ -73,5 +68,9 @@ public class Weather {
     /** keeps a value inside [lo, hi] so that the normal weather always stays in the same range */
     private static double EnforceRange(double v, double lo, double hi) {
         return Math.max(lo, Math.min(hi, v));
+    }
+    /** Returns the current day's top temperature and will be used for the simulation */
+    public double getTopTemp() {
+        return TopTemp;
     }
 }
