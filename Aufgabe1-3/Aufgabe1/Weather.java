@@ -1,3 +1,5 @@
+package Aufgabe1;
+
 import java.util.Random;
 
 /**
@@ -6,7 +8,7 @@ import java.util.Random;
  * I fully understand theexercise. I shared my plan which was discussed with grp members before.
  * AI suggested the enforce range method to use.
  *
- * Weather have two variables: daily high temperature and water reserve.
+ * Aufgabe1.Weather have two variables: daily high temperature and water reserve.
  *
  * Modularization units inside this weather class:
  *  Module part is holding the fixed rules, the ranges and limit that never changes - constants (value ranges, maximum drift) and the

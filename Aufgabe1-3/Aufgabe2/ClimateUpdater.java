@@ -1,3 +1,5 @@
+package Aufgabe2;
+
 /**
  * Part: Vishwas (climate update).
  *
@@ -6,7 +8,7 @@
  * - higher CO2 than the reference makes A grow faster,
  * - mitigation (sum of the effects of the long-term measures) slows or reverses the growth.
  *
- * Modularization unit: module (pure function, no state). The state A itself is held by Climate.
+ * Modularization unit: module (pure function, no state). The state A itself is held by Aufgabe1.Climate.
  */
 public final class ClimateUpdater {
     private ClimateUpdater() {

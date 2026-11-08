@@ -1,4 +1,4 @@
-//Handles Budget for one simulation run and M is constant for the whole run.
+package Aufgabe1;//Handles Budget for one simulation run and M is constant for the whole run.
 
 public class BudgetCalculator {
 

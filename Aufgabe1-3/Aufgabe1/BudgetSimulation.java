@@ -1,10 +1,12 @@
+package Aufgabe1;
+
 import java.util.Random;
-// This class carries out the 100 year budget simulation(each year has 90 days) combining climate measures and budget splitting. (Contains elements from the Climate, Weather and BudgetCalculator classes)
+// This class carries out the 100 year budget simulation(each year has 90 days) combining climate measures and budget splitting. (Contains elements from the Aufgabe1.Climate, Aufgabe1.Weather and Aufgabe1.BudgetCalculator classes)
 public class BudgetSimulation {
     static final int TOTAL_YEARS = 100;
     static final int DAYS_IN_YEAR = 90;
 
-    // "simulation" takes A, M and LogInformation as input parameters, and writes A, decade averages and overshoots into the logs
+    // "simulation" takes A, M and Aufgabe1.LogInformation as input parameters, and writes A, decade averages and overshoots into the logs
     // Gets daily demands, overshoots(if any), yearly budget splits, and updates climate A yearly. Runs for 100 years (each year has 90 days).
     public static void simulation(Climate climate, int M, LogInformation log) {
         Weather weather = new Weather(new Random());

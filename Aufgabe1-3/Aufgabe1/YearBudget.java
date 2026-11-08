@@ -1,3 +1,5 @@
+package Aufgabe1;
+
 // Splits the yearly budget into immediate, cause and shortfall, all values are in percentage of the yearly budget.
 public final class YearBudget{
     private final double immediate;

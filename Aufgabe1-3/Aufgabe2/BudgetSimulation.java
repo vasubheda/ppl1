@@ -1,3 +1,8 @@
+package Aufgabe2;
+
+import Aufgabe1.BudgetCalculator;
+import Aufgabe1.Climate;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -5,8 +10,8 @@ import java.util.Map;
 /**
  * Part: Vishwas (simulation and budget, climate update).
  *
- * Runs the 100 year simulation of ONE location (the Location object carries Weather, Climate, PA, infrastructure
- * and the LogInformation). A year has 3 months of 30 days. Three decision rhythms:
+ * Runs the 100 year simulation of ONE location (the Aufgabe1.Location object carries Aufgabe1.Weather, Aufgabe1.Climate, PA, infrastructure
+ * and the Aufgabe1.LogInformation). A year has 3 months of 30 days. Three decision rhythms:
  *  - every day:   the weather creates the day, the simulation reads the 7 indicators, detects a calamity spike and
  *                 pays the immediate (short-term) measures from the immediate pool
  *  - every month: the monthly indicator means go to the PA object (honest PA + causes), the simulation raises the PA

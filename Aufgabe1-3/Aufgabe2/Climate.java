@@ -1,3 +1,5 @@
+package Aufgabe2;
+
 /**
  * Originally done by Dhananjay Sharma (Assignment 1, see AI-use declaration there).
  * Assignment 2 change (Vishwas, "climate update"): the update logic (cause shares, 10 year window) was removed,
@@ -5,7 +7,7 @@
  * written back with {@link #setA(double)} by the simulation.
  *
  * Holds the climate coefficient A of a location.
- * NOTE: the Calamity sub-object of the Climate class (diagram) is added by the calamity owner.
+ * NOTE: the Calamity sub-object of the Aufgabe1.Climate class (diagram) is added by the calamity owner.
  */
 public class Climate {
     private double a;

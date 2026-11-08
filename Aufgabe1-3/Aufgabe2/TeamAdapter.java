@@ -1,11 +1,17 @@
+package Aufgabe2;
+
+import Aufgabe1.Climate;
+import Aufgabe1.Weather;
+import Aufgabe1.YearBudget;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Part: Vishwas.
  *
- * THE ONLY PLACE where the simulation code touches classes of the teammates (Location, Weather,
- * PublicAcceptance, LogInformation). The names of their methods are still generic (see stubs/), when their real
+ * THE ONLY PLACE where the simulation code touches classes of the teammates (Aufgabe1.Location, Aufgabe1.Weather,
+ * PublicAcceptance, Aufgabe1.LogInformation). The names of their methods are still generic (see stubs/), when their real
  * code is ready, only this file has to be adapted. The rest of the simulation works with plain values:
  * double[7] for the indicators (index constants in SimConstants), List<Integer> for the causes of a PA drop.
  *
@@ -43,7 +49,7 @@ public final class TeamAdapter {
         }
     }
 
-    // ------------------------------------------------------------ Location
+    // ------------------------------------------------------------ Aufgabe1.Location
     public static int wealth(Location location) {
         return location.getWealth();
     }
@@ -56,7 +62,7 @@ public final class TeamAdapter {
         return location.getClimate();
     }
 
-    // ------------------------------------------------------------- Weather
+    // ------------------------------------------------------------- Aufgabe1.Weather
     /**
      * Lets the weather of the location create the next day. The simulation gives the last 0..10 days
      * (oldest first, each as double[7]) and the climate coefficient.

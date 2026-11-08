@@ -1,3 +1,7 @@
+package Aufgabe2;
+
+import Aufgabe1.BudgetCalculator;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -22,7 +26,7 @@ import java.util.Set;
  *  3. causes are served in order of best gain per cost (the "weight" of the measure) until the allowance is empty
  *  4. the result contains the total PA gain, the simulation applies it to the PA object
  *
- * Modularization unit: module-like helper with no state between months (the money state is in BudgetCalculator).
+ * Modularization unit: module-like helper with no state between months (the money state is in Aufgabe1.BudgetCalculator).
  */
 public class MediumTermPlanner {
 

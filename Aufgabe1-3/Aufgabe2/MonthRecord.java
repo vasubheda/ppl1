@@ -1,10 +1,12 @@
+package Aufgabe2;
+
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * Part: Vishwas.
- * What the simulation reports to LogInformation after every month (diagram output 1):
+ * What the simulation reports to Aufgabe1.LogInformation after every month (diagram output 1):
  * short-term measures, medium-term measures and public acceptance.
  */
 public final class MonthRecord {
