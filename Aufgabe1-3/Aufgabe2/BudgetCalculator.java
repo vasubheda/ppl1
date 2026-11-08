@@ -1,7 +1,5 @@
 package Aufgabe2;
 
-import Aufgabe1.YearBudget;
-
 import java.util.Map;
 
 /**

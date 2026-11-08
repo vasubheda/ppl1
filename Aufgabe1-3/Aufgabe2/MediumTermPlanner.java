@@ -1,7 +1,5 @@
 package Aufgabe2;
 
-import Aufgabe1.BudgetCalculator;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;

@@ -1,8 +1,5 @@
 package Aufgabe2;
 
-import Aufgabe1.BudgetCalculator;
-import Aufgabe1.Climate;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
