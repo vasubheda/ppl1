@@ -26,9 +26,8 @@ package Aufgabe2;
     it also evaluates the result and finds the best M
  */
 
-import Aufgabe1.BudgetSimulation;
-import Aufgabe1.Climate;
-import Aufgabe1.LogInformation;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Test {
 
@@ -43,6 +42,9 @@ public class Test {
      */
 
     public static void main(String[] args) {
+        Location location1 = new Location("Wien", 80, 9, new Weather(), new Climate(1), new ArrayList<>());
+        LogInformation logInformation1 = new LogInformation();
 
+        BudgetSimulation.simulation(location1, logInformation1);
     }
 }
