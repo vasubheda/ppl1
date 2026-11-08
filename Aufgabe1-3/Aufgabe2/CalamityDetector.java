@@ -6,7 +6,7 @@ import java.util.Deque;
 /**
  * Part: Vishwas (simulation, immediate measures).
  *
- * Detects calamities from the daily weather WITHOUT knowing the calamity formulas of the Aufgabe1.Weather class:
+ * Detects calamities from the daily weather WITHOUT knowing the calamity formulas of the Weather class:
  * a calamity changes several indicators significantly from one day to the next (a spike), slow drift and the
  * slow recovery to normal weather are no spikes (change per day below SPIKE_THRESHOLD of the indicator range).
  *

@@ -4,7 +4,7 @@ package Aufgabe2;
  * Part: Vishwas (simulation, budget, climate update).
  *
  * Every tunable number of the simulation lives here, so that the whole model can be tuned in one place.
- * All numbers are starting values from the team discussion, they are meant to be tuned with Aufgabe1.Test.
+ * All numbers are starting values from the team discussion, they are meant to be tuned with Test.
  *
  * Modularization unit: module (only constants and pure helper functions, no objects are created).
  */
@@ -16,7 +16,7 @@ public final class SimConstants {
     public static final int YEARS = 100;
     public static final int MONTHS_PER_YEAR = 3;      // 3 months x 30 days = 90 days per year
     public static final int DAYS_PER_MONTH = 30;
-    public static final int HISTORY_DAYS = 10;        // Aufgabe1.Weather gets the last 10 days (0 to 10 entries)
+    public static final int HISTORY_DAYS = 10;        // Weather gets the last 10 days (0 to 10 entries)
 
     // ---------------------------------------------------------- indicators
     // Index of each indicator inside the double[7] arrays the simulation uses internally.
@@ -32,7 +32,7 @@ public final class SimConstants {
     public static final String[] INDICATOR_NAMES = {
             "Temp", "Water", "CO2", "Humidity", "Fine dust", "Cloudiness", "Windspeed"};
 
-    // Value range of every indicator. ASSUMPTION: has to match the ranges of the Aufgabe1.Weather class (owner: Aufgabe1.Weather person).
+    // Value range of every indicator. Has to match the ranges of the Weather class (the same values at the moment).
     // The simulation only uses them to normalise values (spike detection, long-term scores).
     private static final double[] INDICATOR_MIN = {15.0, -5.0, 350.0, 10.0, 5.0, 0.0, 0.0};
     private static final double[] INDICATOR_MAX = {37.0, 5.0, 800.0, 100.0, 150.0, 100.0, 100.0};
@@ -57,7 +57,7 @@ public final class SimConstants {
 
     // -------------------------------------------------- immediate measures
     // Spike detection (day to day change, normalised by the indicator range).
-    // CONSTRAINT with Aufgabe1.Weather: normal daily drift and recovery step < SPIKE_THRESHOLD < smallest calamity shock.
+    // CONSTRAINT with Weather: normal daily drift and recovery step < SPIKE_THRESHOLD < smallest calamity shock.
     public static final double SPIKE_THRESHOLD = 0.15;
     public static final double NOMINAL_SHOCK = 0.30;       // a "normal" calamity changes an indicator by 30% of its range
     public static final double SEVERITY_MIN = 0.5;
@@ -96,6 +96,8 @@ public final class SimConstants {
     public static final int LT_DAMS = 3;
     public static final int LT_HEATING = 4;
     public static final double[] LONG_COST_PER_LEVEL = {200.0, 300.0, 300.0, 400.0, 450.0};
+    // indicator each long-term measure is linked to (same order as LONG_NAMES), used for the Location's infrastructure
+    public static final int[] LONG_LINKED_INDICATOR = {CO2, CLOUDINESS, WINDSPEED, WATER, TEMP};
     // reduction of the yearly growth factor of A per level (before saturation)
     public static final double[] LONG_MITIGATION_PER_LEVEL = {0.0010, 0.0008, 0.0008, 0.0005, 0.0006};
     public static final double LONG_SATURATION_LEVEL = 5.0;  // diminishing returns: m * L * (1 - exp(-level / L))
@@ -107,7 +109,7 @@ public final class SimConstants {
     public static final double A_MIN = 1.0;
     public static final double A_GROWTH_BASE = 1.005;        // yearly factor without CO2 effect and without measures
     public static final double A_CO2_FACTOR = 0.008;         // growth change per (CO2 mean / CO2_REF - 1)
-    public static final double CO2_REF = 420.0;
+    public static final double CO2_REF = 425.0;              // CO2 level at the start of the simulation (Weather starts at 425 ppm)
 
     // ------------------------------------------------------------- helpers
     public static double range(int indicator) {

@@ -24,7 +24,7 @@ import java.util.Set;
  *  3. causes are served in order of best gain per cost (the "weight" of the measure) until the allowance is empty
  *  4. the result contains the total PA gain, the simulation applies it to the PA object
  *
- * Modularization unit: module-like helper with no state between months (the money state is in Aufgabe1.BudgetCalculator).
+ * Modularization unit: module-like helper with no state between months (the money state is in BudgetCalculator).
  */
 public class MediumTermPlanner {
 
@@ -32,11 +32,13 @@ public class MediumTermPlanner {
         final String name;
         final double cost;
         final double gain;
+        final int[] indicators;     // the indicators this measure is linked to (for the Location's infrastructure)
 
-        Measure(String name, double cost, double gain) {
+        Measure(String name, double cost, double gain, int... indicators) {
             this.name = name;
             this.cost = cost;
             this.gain = gain;
+            this.indicators = indicators;
         }
 
         double weight() {
@@ -44,12 +46,29 @@ public class MediumTermPlanner {
         }
     }
 
-    private static final Measure FESTIVAL = new Measure("Festival", SimConstants.FESTIVAL_COST, SimConstants.FESTIVAL_GAIN);
-    private static final Measure SHADING = new Measure("Promoting shading systems", SimConstants.SHADING_COST, SimConstants.SHADING_GAIN);
-    private static final Measure NATURAL = new Measure("Naturally cooled buildings", SimConstants.NATURAL_COOLING_COST, SimConstants.NATURAL_COOLING_GAIN);
-    private static final Measure DISTRICT = new Measure("Building district cooling systems", SimConstants.DISTRICT_COOLING_COST, SimConstants.DISTRICT_COOLING_GAIN);
-    private static final Measure RESERVOIR = new Measure("Water reservoir", SimConstants.RESERVOIR_COST, SimConstants.RESERVOIR_GAIN);
-    private static final Measure HEALTHCARE = new Measure("Healthcare infrastructure", SimConstants.HEALTHCARE_COST, SimConstants.HEALTHCARE_GAIN);
+    private static final Measure FESTIVAL = new Measure("Festival", SimConstants.FESTIVAL_COST, SimConstants.FESTIVAL_GAIN,
+            SimConstants.HUMIDITY, SimConstants.CLOUDINESS, SimConstants.WINDSPEED);
+    private static final Measure SHADING = new Measure("Promoting shading systems", SimConstants.SHADING_COST, SimConstants.SHADING_GAIN,
+            SimConstants.TEMP);
+    private static final Measure NATURAL = new Measure("Naturally cooled buildings", SimConstants.NATURAL_COOLING_COST, SimConstants.NATURAL_COOLING_GAIN,
+            SimConstants.TEMP);
+    private static final Measure DISTRICT = new Measure("Building district cooling systems", SimConstants.DISTRICT_COOLING_COST, SimConstants.DISTRICT_COOLING_GAIN,
+            SimConstants.TEMP);
+    private static final Measure RESERVOIR = new Measure("Water reservoir", SimConstants.RESERVOIR_COST, SimConstants.RESERVOIR_GAIN,
+            SimConstants.WATER);
+    private static final Measure HEALTHCARE = new Measure("Healthcare infrastructure", SimConstants.HEALTHCARE_COST, SimConstants.HEALTHCARE_GAIN,
+            SimConstants.CO2, SimConstants.FINE_DUST);
+    private static final Measure[] ALL = {FESTIVAL, SHADING, NATURAL, DISTRICT, RESERVOIR, HEALTHCARE};
+
+    /** the indicators (SimConstants.TEMP ...) a bought measure is linked to, empty if the name is unknown */
+    public static int[] indicatorsOf(String measureName) {
+        for (Measure m : ALL) {
+            if (m.name.equals(measureName)) {
+                return m.indicators.clone();
+            }
+        }
+        return new int[0];
+    }
 
     /** result of one month: money spent, PA gain to apply and what was bought (name -> count) */
     public static final class Result {

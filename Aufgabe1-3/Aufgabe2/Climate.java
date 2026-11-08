@@ -7,7 +7,6 @@ package Aufgabe2;
  * written back with {@link #setA(double)} by the simulation.
  *
  * Holds the climate coefficient A of a location.
- * NOTE: the Calamity sub-object of the Aufgabe1.Climate class (diagram) is added by the calamity owner.
  */
 public class Climate {
     private double a;

@@ -27,6 +27,7 @@ public class LongTermPlanner {
     private static final int COUNT = SimConstants.LONG_NAMES.length;
     private final double[] invested = new double[COUNT];
     private final double[] level = new double[COUNT];
+    private final int[] registeredWholeLevels = new int[COUNT];   // whole levels already reported to the infrastructure
 
     /**
      * @param remainder  money left for the long-term measures this year
@@ -79,6 +80,20 @@ public class LongTermPlanner {
             sum += SimConstants.LONG_MITIGATION_PER_LEVEL[i] * sat * (1.0 - Math.exp(-level[i] / sat));
         }
         return sum;
+    }
+
+    /**
+     * Whole levels each long-term measure gained since the last call (same order as LONG_NAMES).
+     * Levels only grow, so a fractional level counts as soon as it reaches the next whole number.
+     */
+    public int[] newWholeLevels() {
+        int[] gained = new int[COUNT];
+        for (int i = 0; i < COUNT; i++) {
+            int whole = (int) Math.floor(level[i]);
+            gained[i] = whole - registeredWholeLevels[i];
+            registeredWholeLevels[i] = whole;
+        }
+        return gained;
     }
 
     public double[] getLevels() {
