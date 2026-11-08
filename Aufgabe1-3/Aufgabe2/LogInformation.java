@@ -1,5 +1,7 @@
 package Aufgabe2;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +13,12 @@ public class LogInformation {
 
     //monthly:
     private List<MonthRecord> monthlyRecords;
+
+    public LogInformation() {
+        yearlyClimateCoefficients = new HashMap<>();
+        yearlyBudgets = new HashMap<>();
+        monthlyRecords = new ArrayList<>();
+    }
 
     public void addYear(int year, double climateCoefficient,YearBudget budget){
         yearlyClimateCoefficients.put(year, climateCoefficient);

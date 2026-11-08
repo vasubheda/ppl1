@@ -27,7 +27,7 @@ package Aufgabe2;
  */
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
 
 public class Test {
 
@@ -38,13 +38,13 @@ public class Test {
      * [88 times in whole]
      * and initializises simulation of Aufgabe1.BudgetSimulation
      * after every simulation is over it gives an 88 long Array of Objects from the class LogInfomation to the evalution method
-     * precondition: class {@link Aufgabe1.BudgetSimulation} with method {@link Aufgabe1.BudgetSimulation#simulation(Aufgabe1.Climate, int, Aufgabe1.LogInformation)}, and method {@link #evaluation(Aufgabe1.LogInformation[])}
+     * precondition: class {@link Aufgabe1.BudgetSimulation} with method {@link Aufgabe1.BudgetSimulation#simulation(Aufgabe1.Climate, int, Aufgabe1.LogInformation)}, and method {@link)}
      */
 
     public static void main(String[] args) {
 
-        Location location1 = new Location("Wien", 80, 9, new Weather(), new Climate(1), new ArrayList<>());
-
+        Location location1 = new Location("Wien", 80, 9, new Weather(new Random()), new Climate(1), new ArrayList<>());
         BudgetSimulation.simulation(location1);
+        Evaluation.startEvaluation(location1.getLogInformation());
     }
 }

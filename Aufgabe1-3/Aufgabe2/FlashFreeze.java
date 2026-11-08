@@ -1,3 +1,5 @@
+package Aufgabe2;
+
 /**
  * Part: Dhananjay Sharma
  *
