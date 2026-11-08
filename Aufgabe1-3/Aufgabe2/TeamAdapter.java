@@ -1,14 +1,16 @@
 package Aufgabe2;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Part: Vishwas.
  *
  * THE ONLY PLACE where the simulation code touches classes of the teammates (Location, Weather,
- * PublicAcceptance, LogInformation). The names of their methods are still generic (see stubs/), when their real
- * code is ready, only this file has to be adapted. The rest of the simulation works with plain values:
+ * PublicAcceptance, LogInformation, Infrastructure). If one of their methods changes, only this file has to be
+ * adapted. The rest of the simulation works with plain values:
  * double[7] for the indicators (index constants in SimConstants), List<Integer> for the causes of a PA drop.
  *
  * Modularization unit: module (static methods only, no state).
@@ -56,6 +58,48 @@ public final class TeamAdapter {
 
     public static Climate climate(Location location) {
         return location.getClimate();
+    }
+
+    // ------------------------------------------------------ Infrastructure
+    /**
+     * Adds an investment to the infrastructure of the location. The location already has infrastructure, so an
+     * entry with the same name (ignoring case) is built on: for every linked indicator, amount is added to its
+     * value in the map of affected indicators. Only if no entry with this name exists, a new one is created.
+     *
+     * @param measureName name of the bought measure (e.g. "Water reservoir")
+     * @param indicators  indicator indexes (SimConstants.TEMP ...) the measure is linked to
+     * @param amount      what was added: purchases of a medium-term measure, new whole levels of a long-term one
+     */
+    public static void addInfrastructure(Location location, String measureName, int[] indicators, int amount) {
+        if (indicators.length == 0 || amount <= 0) {
+            return;
+        }
+        List<Infrastructure> all = location.getInfrastructure();
+        for (int i = 0; i < all.size(); i++) {
+            Infrastructure existing = all.get(i);
+            if (!existing.getName().equalsIgnoreCase(measureName)) {
+                continue;
+            }
+            Map<String, Integer> affected = existing.getAffectedIndicators();
+            try {
+                for (int indicator : indicators) {
+                    affected.merge(SimConstants.INDICATOR_NAMES[indicator], amount, Integer::sum);
+                }
+            } catch (UnsupportedOperationException readOnlyMap) {
+                // the map of the existing entry can not be changed, so the entry is replaced by an extended copy
+                Map<String, Integer> copy = new HashMap<>(affected);
+                for (int indicator : indicators) {
+                    copy.merge(SimConstants.INDICATOR_NAMES[indicator], amount, Integer::sum);
+                }
+                all.set(i, new Infrastructure(existing.getName(), copy));
+            }
+            return;
+        }
+        Map<String, Integer> affected = new HashMap<>();
+        for (int indicator : indicators) {
+            affected.put(SimConstants.INDICATOR_NAMES[indicator], amount);
+        }
+        location.addInfrastructure(new Infrastructure(measureName, affected));
     }
 
     // ------------------------------------------------------------- Weather

@@ -7,12 +7,13 @@ import java.util.Map;
 /**
  * Part: Vishwas (simulation and budget, climate update).
  *
- * Runs the 100 year simulation of ONE location (the Aufgabe1.Location object carries Aufgabe1.Weather, Aufgabe1.Climate, PA, infrastructure
- * and the Aufgabe1.LogInformation). A year has 3 months of 30 days. Three decision rhythms:
+ * Runs the 100 year simulation of ONE location (the Location object carries Weather, Climate, PA, infrastructure
+ * and the LogInformation). A year has 3 months of 30 days. Three decision rhythms:
  *  - every day:   the weather creates the day, the simulation reads the 7 indicators, detects a calamity spike and
  *                 pays the immediate (short-term) measures from the immediate pool
  *  - every month: the monthly indicator means go to the PA object (honest PA + causes), the simulation raises the PA
- *                 with medium-term measures and logs month, short-term measures, medium-term measures and PA
+ *                 with medium-term measures (added to the infrastructure of the location) and logs month, short-term
+ *                 measures, medium-term measures and PA
  *  - every year:  the remaining budget is split on the long-term measures, the climate coefficient A is updated
  *                 (CO2 + long-term measures) and logged together with the long-term budget
  *
@@ -72,6 +73,10 @@ public class BudgetSimulation {
                 if (medium.getGain() > 0.0) {
                     TeamAdapter.increasePublicAcceptance(location, medium.getGain());
                 }
+                for (Map.Entry<String, Integer> bought : medium.getPurchases().entrySet()) {
+                    TeamAdapter.addInfrastructure(location, bought.getKey(),
+                            MediumTermPlanner.indicatorsOf(bought.getKey()), bought.getValue());
+                }
                 TeamAdapter.logMonth(location, new MonthRecord(year, month,
                         shortTermTotal, shortTermTotal / SimConstants.DAYS_PER_MONTH, calamities,
                         medium.getSpent(), medium.getPurchases(),
@@ -82,6 +87,11 @@ public class BudgetSimulation {
             double[] yearMeans = mean(yearSum, SimConstants.MONTHS_PER_YEAR * SimConstants.DAYS_PER_MONTH);
             Map<String, Double> longTermAllocation = longTermPlanner.allocate(
                     budget.remainder(), yearMeans, detector, TeamAdapter.publicAcceptanceValue(location));
+            int[] newLevels = longTermPlanner.newWholeLevels();
+            for (int i = 0; i < newLevels.length; i++) {
+                TeamAdapter.addInfrastructure(location, SimConstants.LONG_NAMES[i],
+                        new int[]{SimConstants.LONG_LINKED_INDICATOR[i]}, newLevels[i]);
+            }
             detector.endYear();
             climate.setA(ClimateUpdater.nextA(climate.getA(), yearMeans[SimConstants.CO2], longTermPlanner.mitigation()));
             TeamAdapter.logYear(location, year, climate.getA(), budget.closeYear(longTermAllocation));
