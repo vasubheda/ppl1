@@ -1,5 +1,6 @@
 package Aufgabe2;
 
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,6 +110,37 @@ public final class TeamAdapter {
      */
     public static void advanceWeather(Location location, List<double[]> last10Days, double climateCoefficient) {
         location.getWeather().nextDay(last10Days, climateCoefficient);
+    }
+
+    /**
+     * Lets each calamity check for today and possibly shock the weather of the location.
+     * The calamity objects own their own formulas cooldowns and effects the simulation only triggers the daily check.
+     */
+    public static void advanceCalamities(Location location, List<Calamity> calamities, double climateCoefficient, Random random) {
+        Weather weather = location.getWeather();
+        for (Calamity calamity : calamities) {
+            calamity.dailyCheck(weather, climateCoefficient, random);
+        }
+    }
+
+    /**
+     * Lets the built infrastructure of the location influence the weather: every infrastructure pulls the
+     * indicators it affects a bit back toward normal (resilience). The more was invested in a measure, the
+     * stronger but saturating the effect (SimConstants.infrastructureStrength), so infrastructure makes the
+     * weather calmer without ever fully controlling it.
+     */
+    public static void applyInfrastructure(Location location, double climateCoefficient) {
+        Weather weather = location.getWeather();
+        for (Infrastructure infra : location.getInfrastructure()) {
+            for (Map.Entry<String, Integer> entry : infra.getAffectedIndicators().entrySet()) {
+                int index = causeToIndicator(entry.getKey());
+                if (index < 0) {
+                    continue;
+                }
+                double strength = SimConstants.infrastructureStrength(entry.getValue());
+                weather.stabilize(index, strength, climateCoefficient);
+            }
+        }
     }
 
     /** reads the 7 indicator values of the current day with the 7 getters of the weather */

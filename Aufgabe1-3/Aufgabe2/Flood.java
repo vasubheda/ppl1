@@ -8,11 +8,11 @@ package Aufgabe2;
  * Effect: water reserve up, humidity up.
  */
 public class Flood extends Calamity {
-    private static final double A = 0.4;   // climate coefficient (more heavy rain with climate change)
+    private static final double A = 1.0;   // climate coefficient (more heavy rain with climate change)
     private static final double B = 0.25;  // random number
-    private static final double C = 0.5;   // water reserve
-    private static final double D = 0.8;   // humidity
-    private static final double THRESHOLD = 1.45;
+    private static final double C = 0.4;   // water reserve
+    private static final double D = 0.5;   // humidity
+    private static final double THRESHOLD = 1.1;
 
 
     public String getName() {

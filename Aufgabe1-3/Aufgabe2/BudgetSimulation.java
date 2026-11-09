@@ -3,6 +3,7 @@ package Aufgabe2;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Part: Vishwas (simulation and budget, climate update).
@@ -35,6 +36,13 @@ public class BudgetSimulation {
         LongTermPlanner longTermPlanner = new LongTermPlanner();
         List<double[]> history = new ArrayList<>();     // the last 0..10 days that the weather gets
 
+        // the calamities that can strike this location (own random, seeded by the name so runs are reproducible)
+        Random rng = new Random(location.getName().hashCode());
+        List<Calamity> calamityList = new ArrayList<>();
+        calamityList.add(new Drought());
+        calamityList.add(new Flood());
+        calamityList.add(new FlashFreeze());
+
         for (int year = 1; year <= SimConstants.YEARS; year++) {
             budget.startYear();
             double[] yearSum = new double[SimConstants.INDICATOR_COUNT];
@@ -47,6 +55,8 @@ public class BudgetSimulation {
 
                 for (int day = 1; day <= SimConstants.DAYS_PER_MONTH; day++) {
                     TeamAdapter.advanceWeather(location, history, climate.getA());
+                    TeamAdapter.applyInfrastructure(location, climate.getA());      // built infrastructure calms the weather
+                    TeamAdapter.advanceCalamities(location, calamityList, climate.getA(), rng);  // calamities may shock it
                     double[] today = TeamAdapter.readIndicators(location);
 
                     CalamityDetector.Event event = detector.check(today);

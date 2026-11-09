@@ -50,6 +50,9 @@ public class Weather {
     // how much the target depends on the last days: 0 = not at all, 1 = only on the last days
     private static final double MEMORY = 0.3;
 
+    // upper bound for the infrastructure resilience pull per day, so infrastructure never fully controls the weather
+    private static final double STABILIZE_MAX = 0.25;
+
     private static final int DAYS_PER_YEAR = SimConstants.MONTHS_PER_YEAR * SimConstants.DAYS_PER_MONTH;
 
     /*
@@ -104,13 +107,35 @@ public class Weather {
     private final Random random;
     private int dayCount = 0;
 
-    /** creates the weather with a shared random generator and picks start values near the normal values */
+    /* per-location offset added to the base normal of every indicator, so each location has its own climate
+        All zero = the standard climate.
+    */
+    private final double[] normalShift;
+
+    /** creates the weather with the standard climate (no per-location shift) */
     public Weather(Random random) {
+        this(random, new double[N]);
+    }
+
+    /**
+     * creates the weather with a shared random generator and a per-location normal shift (length 7, one offset per indicator in SimConstants order).
+     * The weather then moves around these shifted normal values.
+     */
+    public Weather(Random random, double[] normalShift) {
         this.random = random;
+        this.normalShift = normalShift.clone();
         for (int i = 0; i < N; i++) {
             double start = normalValue(i, 0, SimConstants.A_MIN) + SIGMA[i] * random.nextGaussian();
             values[i] = SimConstants.clamp(start, MIN[i], MAX[i]);
         }}
+
+    /** creates the weather with a shared random generator and picks start values near the normal values */
+    /*public Weather(Random random) {
+        this.random = random;
+        for (int i = 0; i < N; i++) {
+            double start = normalValue(i, 0, SimConstants.A_MIN) + SIGMA[i] * random.nextGaussian();
+            values[i] = SimConstants.clamp(start, MIN[i], MAX[i]);
+        }}*/
 
     /**
      * Moves the weather to the next day. last10Days are the last 0 - 10 days (oldest first,
@@ -150,6 +175,18 @@ public class Weather {
      */
     public void changeIndicator(int index, double delta) {
         values[index] = SimConstants.clamp(values[index] + delta, MIN[index], MAX[index]);
+    }
+
+    /**
+     * Infrastructure resilience: pulls one indicator a bit back toward its normal value of the day
+     * so that built infrastructure (water reservoir, cooling systems, ...) makes the weather of the location less extreme.
+     * strength is the pull factor capped at STABILIZE_MAX so infrastructure never fully controls the weather.
+     * The range is kept as a safety net. climateCoefficient is A, like in nextDay.
+     */
+    public void stabilize(int index, double strength, double climateCoefficient) {
+        double target = normalValue(index, dayCount, climateCoefficient);
+        double s = SimConstants.clamp(strength, 0.0, STABILIZE_MAX);
+        values[index] = SimConstants.clamp(values[index] + s * (target - values[index]), MIN[index], MAX[index]);
     }
 
     /** returns the value of one indicator by its SimConstants index */
@@ -193,9 +230,9 @@ public class Weather {
      * CO2 rises slowly every day, all other indicators have a fixed normal level.
      *
      * The special cases are chosen with if/else on the index, the procedure works only
-     * with its parameters and the static tables, no object is asked.
+     * with its parameters and the static tables, reads the per-instance normalShift, otherwise only its parameters and the static tables.
      */
-    private static double normalValue(int i, int dayCount, double climateCoefficient) {
+    private double normalValue(int i, int dayCount, double climateCoefficient) {
         double normal = NORMAL[i];
         if (i == SimConstants.TEMP) {
             int dayOfSeason = dayCount % DAYS_PER_YEAR;
@@ -203,7 +240,7 @@ public class Weather {
             normal = TEMP_SEASON_EDGE + (TEMP_SEASON_PEAK - TEMP_SEASON_EDGE) * hump;
         } else if (i == SimConstants.CO2) {
             normal = NORMAL[i] + CO2_TREND_PER_DAY * dayCount;}
-        return normal + CC_EFFECT[i] * (climateCoefficient - SimConstants.A_MIN);
+        return normal + normalShift[i] + CC_EFFECT[i] * (climateCoefficient - SimConstants.A_MIN);
     }
 
     /**

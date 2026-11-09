@@ -125,6 +125,18 @@ public final class SimConstants {
         return Math.max(lo, Math.min(hi, v));
     }
 
+    // ---------------------------------------------- infrastructure effect
+    // How strongly built infrastructure pulls an affected indicator back toward normal each day.
+    public static final double INFRA_STRENGTH_MAX = 0.20;    // saturates here, so weather still varies
+    public static final double INFRA_STRENGTH_SCALE = 30.0;  // accumulated amount for ~63% of the max effect
+
+    public static double infrastructureStrength(double amount) {
+        if (amount <= 0.0) {
+            return 0.0;
+        }
+        return INFRA_STRENGTH_MAX * (1.0 - Math.exp(-amount / INFRA_STRENGTH_SCALE));
+    }
+
     /** public acceptance (0-100) scales the effectiveness of long-term measures between 0.5 and 1.0 */
     public static double paEffectiveness(double pa) {
         return 0.5 + clamp(pa, 0.0, 100.0) / 200.0;

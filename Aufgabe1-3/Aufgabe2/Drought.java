@@ -8,12 +8,12 @@ package Aufgabe2;
  * Effect: temperature up, water reserve down, humidity down.
  */
 public class Drought extends Calamity {
-    private static final double A = 0.5;   // climate coefficient
+    private static final double A = 1.0;   // climate coefficient
     private static final double B = 0.25;  // random number
-    private static final double C = 1.0;   // temperature
-    private static final double D = 0.3;   // water reserve
-    private static final double E = 0.5;   // humidity
-    private static final double THRESHOLD = 0.9;
+    private static final double C = 0.35;   // temperature
+    private static final double D = 0.15;   // water reserve
+    private static final double E = 0.15;   // humidity
+    private static final double THRESHOLD = 1.0;
 
     public String getName() {
         return "Drought";
