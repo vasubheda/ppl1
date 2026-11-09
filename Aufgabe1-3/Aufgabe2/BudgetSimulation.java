@@ -6,27 +6,17 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Part: Vishwas (simulation and budget, climate update).
- *
- * Runs the 100 year simulation of ONE location (the Location object carries Weather, Climate, PA, infrastructure
- * and the LogInformation). A year has 3 months of 30 days. Three decision rhythms:
- *  - every day:   the weather creates the day, the simulation reads the 7 indicators, detects a calamity spike and
- *                 pays the immediate (short-term) measures from the immediate pool
- *  - every month: the monthly indicator means go to the PA object (honest PA + causes), the simulation raises the PA
- *                 with medium-term measures (added to the infrastructure of the location) and logs month, short-term
- *                 measures, medium-term measures and PA
- *  - every year:  the remaining budget is split on the long-term measures, the climate coefficient A is updated
- *                 (CO2 + long-term measures) and logged together with the long-term budget
- *
- * Modularization unit: module (static method, all state lives in the objects created per run).
- * Not responsible for: weather values, calamity formulas and the PA calculation (teammates, see TeamAdapter).
+* Part: Vishwas (simulation, budget and climate updation)
+* This runs the 100 year simultion of 1 location.
+* The location object contains weather, climate, PA(public acceptance), infrastructure and LogInformation.)
+* A year has 3 months of 30 days.
+* The flow :
+* - every day : The weather creates the day, the simulation reads the 7 indicators, detects a calamity, if calamity happened, it pays the immediate measures from the immediate pool.
+* - every month : The monthly indicator mean values are calculated, these means go to the PA object (honest PA + causes), then the simulation aims to improve the PA by taking medium-term measures (the bought infrastructure is added to the infra of the location). After all this, it logs month, short-ter measures, medium-term measures and PA (public acceptance)
+* - every year : The remaining budget is split on the long-term measures, the climate coeff. A is updated (based on CO2 + long-term measures) and logged together with the long-term budget.
  */
 public class BudgetSimulation {
 
-    /**
-     * Precondition: location is complete (weather, climate, PA and log information are set).
-     * Postcondition: the log information of the location holds 300 monthly and 100 yearly records.
-     */
     public static void simulation(Location location) {
         Climate climate = TeamAdapter.climate(location);
         BudgetCalculator budget = new BudgetCalculator(
@@ -34,7 +24,7 @@ public class BudgetSimulation {
         CalamityDetector detector = new CalamityDetector();
         MediumTermPlanner mediumPlanner = new MediumTermPlanner();
         LongTermPlanner longTermPlanner = new LongTermPlanner();
-        List<double[]> history = new ArrayList<>();     // the last 0..10 days that the weather gets
+        List<double[]> history = new ArrayList<>();    // the last 10 days that the weather is given
 
         // the calamities that can strike this location (own random, seeded by the name so runs are reproducible)
         Random rng = new Random(location.getName().hashCode());
@@ -75,7 +65,7 @@ public class BudgetSimulation {
                     }
                 }
 
-                // medium-term measures: the PA object calculates the honest PA, the simulation improves it
+                // medium-term measures : the PA object calculates the honest PA, and the simulation aims to improves it
                 double[] monthMeans = mean(monthSum, SimConstants.DAYS_PER_MONTH);
                 TeamAdapter.PaReport report = TeamAdapter.updatePublicAcceptance(location, monthMeans);
                 MediumTermPlanner.Result medium = mediumPlanner.act(
@@ -93,7 +83,7 @@ public class BudgetSimulation {
                         report.getValue(), TeamAdapter.publicAcceptanceValue(location)));
             }
 
-            // long-term measures with what is left, then the yearly climate update
+            // Long-term measures with what is left, then the yearly climate updation
             double[] yearMeans = mean(yearSum, SimConstants.MONTHS_PER_YEAR * SimConstants.DAYS_PER_MONTH);
             Map<String, Double> longTermAllocation = longTermPlanner.allocate(
                     budget.remainder(), yearMeans, detector, TeamAdapter.publicAcceptanceValue(location));

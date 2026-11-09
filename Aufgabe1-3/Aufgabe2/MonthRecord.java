@@ -5,9 +5,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Part: Vishwas.
- * What the simulation reports to LogInformation after every month (diagram output 1):
- * short-term measures, medium-term measures and public acceptance.
+* Part : Vishwas.
+* This is what the simulation reports to LogInformation after every month -
+* short-term measures, medium-term measures and public acceptance.
+*
  */
 public final class MonthRecord {
     private final int year;
@@ -42,17 +43,17 @@ public final class MonthRecord {
         return month;
     }
 
-    /** money paid for short-term (immediate) measures in this month */
+    // money paid for short-term measures this month
     public double getShortTermTotal() {
         return shortTermTotal;
     }
 
-    /** average per day of the month for short-term measures */
+    // the short-term measures daily average of the month
     public double getShortTermDailyAverage() {
         return shortTermDailyAverage;
     }
 
-    /** number of calamities the simulation detected in this month */
+    // the number of calamities that happened this month
     public int getCalamities() {
         return calamities;
     }
@@ -61,17 +62,18 @@ public final class MonthRecord {
         return mediumSpent;
     }
 
-    /** bought medium-term measures: name -> how often */
+    // the medium-term measures purchases : name -> how often
     public Map<String, Integer> getMediumPurchases() {
         return mediumPurchases;
     }
 
     /** the "honest" public acceptance, as calculated by the PA object from the monthly indicators */
+    // the honest public acceptance, as calculated by the PA object from the monthly indicators.
     public double getPaAfterUpdate() {
         return paAfterUpdate;
     }
 
-    /** public acceptance after the medium-term measures raised it (this value is the final one of the month) */
+    // public acceptance that was raised after the medium-term measures (this value is the final one of the month)
     public double getPaAfterMeasures() {
         return paAfterMeasures;
     }

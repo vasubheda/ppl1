@@ -4,27 +4,23 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 /**
- * Part: Vishwas (simulation, immediate measures).
- *
- * Detects calamities from the daily weather WITHOUT knowing the calamity formulas of the Weather class:
- * a calamity changes several indicators significantly from one day to the next (a spike), slow drift and the
- * slow recovery to normal weather are no spikes (change per day below SPIKE_THRESHOLD of the indicator range).
- *
- * Signatures (from the "how the weather values are changed" part of the diagram):
- *   drought      : Temp up,   Water down, Humidity down   (Temp must spike + at least one more)
- *   flood        : Water up,  Humidity up                 (Water must spike + Humidity)
- *   flash freeze : Temp down, Humidity down               (Temp must spike + Humidity)
- *
- * It also keeps the calamity track record of the last years, which the long-term measures use to estimate
- * which calamity is probable in the future.
- *
- * Modularization unit: object (remembers yesterday's values and the track record of one run).
+* Part : Vishwas (simulation, immediate measures).
+* Detects calamities from daily weather.
+* A calamity changes several indicators significantly, from one day to the next (a spike), all the other dynamics like gradual recovery, normal increments,are not considered spikes. (change per day below SPIKE_THRESHOLD of the indicator range).
+*
+* How the weather values are changed according to the calamities :
+* 1. Drought : Temp up, Water down, Humidity down (all other indicators stay normal)
+* 2. Flood : Water up, Humidity up (all others stay normal)
+* 3. Flash Freeze : Temp down, Humidity down (all others stay normal)
+*
+* This also keeps the calamity track record of the last years, which the long-term measures use to estimate which calamity is probable in the future.
+*
  */
 public class CalamityDetector {
 
     public enum Type {DROUGHT, FLOOD, FLASH_FREEZE}
 
-    /** a detected calamity with its severity (about 1.0 = nominal shock, between SEVERITY_MIN and SEVERITY_MAX) */
+    // Gives the detected calamity type with its severity
     public static final class Event {
         private final Type type;
         private final double severity;
@@ -50,10 +46,7 @@ public class CalamityDetector {
     private final int[] yearCounts = new int[Type.values().length];
     private final Deque<int[]> pastYears = new ArrayDeque<>();
 
-    /**
-     * Compares today's 7 indicator values with yesterday's.
-     * Returns the detected calamity or null. The first call only remembers the values.
-     */
+    // Compares today's seven indicator values with yesterday's, returns the detected calamity, or null.
     public Event check(double[] today) {
         if (previous == null) {
             previous = today.clone();
@@ -84,7 +77,7 @@ public class CalamityDetector {
         return best;
     }
 
-    /** closes the year: the counts of this year move into the track record (last N years) */
+    // This closes the year, the counts of this year are transferred into the track record (last N years)
     public void endYear() {
         pastYears.addLast(yearCounts.clone());
         while (pastYears.size() > SimConstants.PROBABILITY_WINDOW_YEARS) {
@@ -95,10 +88,7 @@ public class CalamityDetector {
         }
     }
 
-    /**
-     * Estimated probability that the NEXT calamity is of the given type, from the track record of the last years.
-     * Smoothed (+1 per type), so the three probabilities always sum to 1, also without any calamity so far.
-     */
+    // Estimates the probability that the next calamity is of the given type, from the track record of the past years.
     public double probability(Type type) {
         double mine = 0.0;
         double total = 0.0;

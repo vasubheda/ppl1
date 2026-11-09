@@ -3,7 +3,7 @@ package Aufgabe2;
 
 /*Allgemeine Informationen
     Arbeitaufteilung:
-    Simon: Test, Location, Evaluation, LoginInformation, Infrastructure
+    Simon: Evaluation, Infrastructure, Test, LogInformation, Location, SimConstants, TeamAdapter
     Vishwas: BudgetCalculator, BudgetSimulation, CalamityDetector, ClimateUpdater, LongTermPlanner, MediumTermPlanner, MonthRecord, SimConstants, TeamAdapter, YearBudget
     Jay: Calamity, Climate, Drought, FlashFreeze, Flood, PAResult, PublicAcceptance, Weather
 
@@ -11,11 +11,12 @@ package Aufgabe2;
     I used it to explain the LVA slides to me and how I should go about to solve the task Link: https://claude.ai/share/cf914a47-1f12-43c4-ae4d-8309972f7650
 
     Vishwas Vikram Bheda Use of Ai:
-    - I used claude to translate the assignment in Englih, then I used ChatGPT to clear some doubts and approaches.
-    - I used AI to understand how to use the Aufgabe1.Weather.java and Aufgabe1.Climate.java classes to integrate it into my simulation, the suggestions from AI include line 15, 19, 20, 25, 31, 32
-    - I used AI to help me format some print messages in printEdgeCase and printSummary in Aufgabe1.Test, so that the output is formatted consistently.
-    Link to Claude : https://claude.ai/share/4b05c785-2a51-4e75-9cf7-d765185d23eb
-    Link to ChatGPT : https://chatgpt.com/share/6ad5cd92-82b4-83eb-a6e7-051d9122f3a5
+    - I used claude to translate the assignment in English, then I used ChatGPT to clear some doubts and approaches.
+    - I used AI to understand how to use the Weather, Calamity, Tests, Evaluation, Infrastructure, Location, LogInformation, PublicAcceptence classes to integrate it into my simulation.
+
+    Dhananjay Sharma Use of Ai:
+    - I used claude to translate the assignment in English, then chatted with Claude to help clear my doubts on implementation.
+    - Link - https://claude.ai/share/b0176886-1f03-4753-9223-7b309590c4e5
 
  */
 

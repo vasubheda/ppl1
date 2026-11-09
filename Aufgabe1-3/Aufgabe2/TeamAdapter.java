@@ -7,20 +7,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Part: Vishwas.
- *
- * THE ONLY PLACE where the simulation code touches classes of the teammates (Location, Weather,
- * PublicAcceptance, LogInformation, Infrastructure). If one of their methods changes, only this file has to be
- * adapted. The rest of the simulation works with plain values:
- * double[7] for the indicators (index constants in SimConstants), List<Integer> for the causes of a PA drop.
- *
- * Modularization unit: module (static methods only, no state).
+* Part : Vishwas, Simon and Dhananjay
+*
+* The only place where the simulation code touches the classes of other implementations (Location, Weather, PublicAcceptance, LogInformation, Infrastructure). If there are any compatibility issues, they can be handled from here and this file can adopt to the ways of other implementations.
+*
  */
 public final class TeamAdapter {
     private TeamAdapter() {
     }
 
-    /** What the PA object returned after the monthly update, translated into simulation terms. */
+    // What the PA object returned after the monthly update, translated into simulation terms.
     public static final class PaReport {
         private final double value;
         private final double delta;
@@ -32,23 +28,23 @@ public final class TeamAdapter {
             this.causes = causes;
         }
 
-        /** the honest public acceptance */
+        // the honest public acceptance
         public double getValue() {
             return value;
         }
 
-        /** change of PA caused by the indicators (negative = got lower) */
+        // change of PA caused by the indicators (negative = got lower)
         public double getDelta() {
             return delta;
         }
 
-        /** indicator indexes (SimConstants.TEMP ...) whose threshold was violated */
+        // indicator indexes (SimConstants.TEMP ...) whose threshold was violated
         public List<Integer> getCauses() {
             return causes;
         }
     }
 
-    // ------------------------------------------------------------ Location
+    // --------------------------------------------------------- Location
     public static int wealth(Location location) {
         return location.getWealth();
     }
@@ -61,7 +57,7 @@ public final class TeamAdapter {
         return location.getClimate();
     }
 
-    // ------------------------------------------------------ Infrastructure
+    // ---------------------------------------------------- Infrastructure
     /**
      * Adds an investment to the infrastructure of the location. The location already has infrastructure, so an
      * entry with the same name (ignoring case) is built on: for every linked indicator, amount is added to its
@@ -143,7 +139,7 @@ public final class TeamAdapter {
         }
     }
 
-    /** reads the 7 indicator values of the current day with the 7 getters of the weather */
+    // reads the 7 indicator values of the current day with the 7 getters of the weather
     public static double[] readIndicators(Location location) {
         Weather w = location.getWeather();
         double[] values = new double[SimConstants.INDICATOR_COUNT];
@@ -158,7 +154,7 @@ public final class TeamAdapter {
     }
 
     // ------------------------------------------------- Public acceptance
-    /** gives the monthly indicator means to the PA object, which calculates the honest PA and the causes */
+    // gives the monthly indicator means to the PA object, which calculates the honest PA and the causes
     public static PaReport updatePublicAcceptance(Location location, double[] monthlyMeans) {
         PAResult r = location.getPublicAcceptance().update(monthlyMeans);
         List<Integer> causes = new ArrayList<>();
@@ -171,7 +167,7 @@ public final class TeamAdapter {
         return new PaReport(r.getPa(), r.getDelta(), causes);
     }
 
-    /** the improvement of PA through medium-term measures is applied by the simulation */
+    // the improvement of PA through medium-term measures is applied by the simulation
     public static void increasePublicAcceptance(Location location, double gain) {
         location.getPublicAcceptance().increase(gain);
     }
@@ -180,7 +176,7 @@ public final class TeamAdapter {
         return location.getPublicAcceptance().getValue();
     }
 
-    /** translates the cause names of the PA object (e.g. "Temp", "CO2", "Fine dust") into indicator indexes */
+    // translates the cause names of the PA object (e.g. "Temp", "CO2", "Fine dust") into indicator indexes
     static int causeToIndicator(String cause) {
         String key = cause.toLowerCase().replaceAll("[^a-z0-9]", "");
         switch (key) {

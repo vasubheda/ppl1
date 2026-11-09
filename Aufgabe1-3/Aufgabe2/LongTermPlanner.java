@@ -4,36 +4,36 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Part: Vishwas (simulation, long-term measures).
- *
- * Once a year the remaining budget is split on the 5 long-term measures. The score of a measure is
- *   score = 0.6 * indicator score + 0.4 * calamity risk
- * Indicator score (from the yearly mean of the linked indicator, normalised 0..1):
- *   CO2 tax        - need:      CO2 high
- *   Solar          - potential: cloudiness low
- *   Windmills      - potential: windspeed high
- *   Turbines/Dams  - potential: water level high
- *   Heating infra  - need:      temperature low
- * Calamity risk (track record of the last years, see CalamityDetector.probability):
- *   drought -> dams and solar (half each), flood -> dams, flash freeze -> heating infra
- * The remainder is split proportionally to the scores. The money of a measure builds up its "level"
- * (invested / cost per level), scaled by the public acceptance effectiveness (0.5 + PA/200).
- * The effect on the climate is mitigation = sum m_i * L * (1 - exp(-level_i / L)) (diminishing returns),
- * which {@link ClimateUpdater} uses to slow the growth of A.
- *
- * Modularization unit: object (the levels of the measures are built up over the whole run of a location).
+* Part : Vishwas (simulation, long-term measures).
+* Once a year, the remaining budgt is split on the 5 long-term measures, the measures are scored by the formula -
+* score = 0.6 * indicator score + 0.4 * calamity risk
+* The indicator score, and how we categorized the long-term measures :
+* Note that the indicator values shown below are the yearly means.
+* CO2 tax       - need : CO2 High
+* Heating infra - need : temperature Low
+* Solar         - potential : cloudiness Low
+* Windmills     - potential : windspeed High
+* Turbines/Dams - potential : water level High
+*
+* calamity risk (track record of the last years, see CalammityDetector.probability)
+*  drought -> dams and solar (half each), for flood -> dams, for flash freeze -> heating infra
+* The remainder is split according to the scores.
+* Then scaled by the public acceptance effectiveness (0.5 + PA/200).
+*
+* The effect on climate is mitigation = sum m_i * L * (1 - exp(-level_i/L)) (diminishing returns), which the ClimateUpdater uses to slow down the growth of A.
+*
  */
 public class LongTermPlanner {
     private static final int COUNT = SimConstants.LONG_NAMES.length;
     private final double[] invested = new double[COUNT];
     private final double[] level = new double[COUNT];
-    private final int[] registeredWholeLevels = new int[COUNT];   // whole levels already reported to the infrastructure
+    private final int[] registeredWholeLevels = new int[COUNT];  // whole levels that are already reported to the infrastructure
 
     /**
-     * @param remainder  money left for the long-term measures this year
-     * @param yearMeans  yearly means of the 7 indicators
-     * @param detector   calamity track record
-     * @param pa         public acceptance (0-100) at the end of the year
+     * @param remainder  The money left for the long term measures this year
+     * @param yearMeans  7 indicator yearly means
+     * @param detector   track record of the last years.. for calamity
+     * @param pa         public acceptance at the end of the year (range 0-100)
      * @return how much money each long-term measure received this year (name -> amount)
      */
     public Map<String, Double> allocate(double remainder, double[] yearMeans, CalamityDetector detector, double pa) {
@@ -72,7 +72,7 @@ public class LongTermPlanner {
         return allocation;
     }
 
-    /** total reduction of the yearly growth factor of A that the long-term measures built up so far */
+    // The total reduction of the yearly growth factor of A, because of the long-term measures built up so far.
     public double mitigation() {
         double sum = 0.0;
         double sat = SimConstants.LONG_SATURATION_LEVEL;
@@ -82,10 +82,7 @@ public class LongTermPlanner {
         return sum;
     }
 
-    /**
-     * Whole levels each long-term measure gained since the last call (same order as LONG_NAMES).
-     * Levels only grow, so a fractional level counts as soon as it reaches the next whole number.
-     */
+    // The levels each long-term measure gained since the last call.
     public int[] newWholeLevels() {
         int[] gained = new int[COUNT];
         for (int i = 0; i < COUNT; i++) {

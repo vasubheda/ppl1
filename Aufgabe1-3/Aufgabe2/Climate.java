@@ -2,9 +2,7 @@ package Aufgabe2;
 
 /**
  * Originally done by Dhananjay Sharma (Assignment 1, see AI-use declaration there).
- * Assignment 2 change (Vishwas, "climate update"): the update logic (cause shares, 10 year window) was removed,
- * the yearly update of A is now calculated in {@link ClimateUpdater} (based on CO2 and long-term measures) and
- * written back with {@link #setA(double)} by the simulation.
+ * Assignment 2 change (Vishwas, for "climate update") - The update logic(cause shares, 10 year window) was removed, the yearly update of A is now calculated in ClimateUpdater (based on CO2 and long-term measures) and written back by the simulation.
  *
  * Holds the climate coefficient A of a location.
  */
