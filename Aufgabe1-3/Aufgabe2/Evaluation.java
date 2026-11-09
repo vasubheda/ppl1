@@ -130,7 +130,8 @@ public class Evaluation {
     }
 
     /**
-     * acceptance score: average public acceptance (after the measures) over all months, divided by 100
+     * acceptance score: average public acceptance (after the measures) over all months divided by 50
+     * so a mean PA of 50 or more gives the full score (matches ">50 = positive acceptance" from the scope list).
      */
 
     private static double scoreAcceptance(List<MonthRecord> months) {
@@ -141,8 +142,7 @@ public class Evaluation {
         for (MonthRecord m : months) {
             sum += m.getPaAfterMeasures();
         }
-        return SimConstants.clamp(((sum / months.size()) - 40.0) / 50.0, 0.0, 1.0);
-    }
+        return SimConstants.clamp((sum / months.size()) / 50.0, 0.0, 1.0);    }
 
     /**
      * calamity score: 1 - (average calamities per month / ACCEPTABLE_CALAMITY_PER_MONTH), fewer is better

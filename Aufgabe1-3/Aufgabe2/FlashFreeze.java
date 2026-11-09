@@ -9,7 +9,7 @@ package Aufgabe2;
  * Effect of flash freezing: temperature down, humidity down
  */
 public class FlashFreeze extends Calamity {
-    private static final double A = 1.0;   // climate coefficient (more extreme weather with climate change)
+    private static final double A = 0.8;   // climate coefficient (more extreme weather with climate change)
     private static final double B = 0.25;  // random number
     private static final double C = 0.4;   // temperature
     private static final double D = 0.2;   // humidity

@@ -228,9 +228,8 @@ public class Weather {
      * Normal value of indicator i on this day, shifted by the climate coefficient A, no shift at A = A_MIN.
      * Temperature follows the summer: lowest at the beginning and the end of the season, highest in the middle.
      * CO2 rises slowly every day, all other indicators have a fixed normal level.
-     *
-     * The special cases are chosen with if/else on the index, the procedure works only
-     * with its parameters and the static tables, reads the per-instance normalShift, otherwise only its parameters and the static tables.
+     * The special cases are chosen with if/else on the index.
+     * The method works with its parameters, the static tables and the per-instance normalShift of this location.
      */
     private double normalValue(int i, int dayCount, double climateCoefficient) {
         double normal = NORMAL[i];
