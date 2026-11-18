@@ -48,42 +48,52 @@ public class Test {
         Location location1 = new Location("Minas Tirith", 80, 8, new Weather(new Random(), shift(0, 0, 0, 0, 0)), new Climate(1.2), new ArrayList<>(), new LogInformation("Minas Tirith"));
         BudgetSimulation.simulation(location1);
         Evaluation.startEvaluation(location1.getLogInformation());
+        FunctionalAnalysis.print(location1.getLogInformation());   // STYLE: functional part, see FunctionalAnalysis
 
         Location location2 = new Location("Hobbiton", 55, 4, new Weather(new Random(), shift(-2, 1, 5, 0, 0)), new Climate(1.0), new ArrayList<>(), new LogInformation("Hobbiton"));
         BudgetSimulation.simulation(location2);
         Evaluation.startEvaluation(location2.getLogInformation());
+        FunctionalAnalysis.print(location2.getLogInformation());   // STYLE: functional part, see FunctionalAnalysis
 
         Location location3 = new Location("Erebor", 100, 3, new Weather(new Random(), shift(-13, 0, -10, 0, 0)), new Climate(1.9), new ArrayList<>(), new LogInformation("Erebor"));
         BudgetSimulation.simulation(location3);
         Evaluation.startEvaluation(location3.getLogInformation());
+        FunctionalAnalysis.print(location3.getLogInformation());   // STYLE: functional part, see FunctionalAnalysis
 
         Location location4 = new Location("Edoras", 60, 7, new Weather(new Random(), shift(2, -1, 0, 0, 10)), new Climate(1.4), new ArrayList<>(), new LogInformation("Edoras"));
         BudgetSimulation.simulation(location4);
         Evaluation.startEvaluation(location4.getLogInformation());
+        FunctionalAnalysis.print(location4.getLogInformation());   // STYLE: functional part, see FunctionalAnalysis
 
         Location location5 = new Location("Barad-dur", 20, 2, new Weather(new Random(), shift(12, -4, -25, 40, 0)), new Climate(2.7), new ArrayList<>(), new LogInformation("Barad-dur"));
         BudgetSimulation.simulation(location5);
         Evaluation.startEvaluation(location5.getLogInformation());
+        FunctionalAnalysis.print(location5.getLogInformation());   // STYLE: functional part, see FunctionalAnalysis
 
         Location location6 = new Location("Rivendell", 75, 7, new Weather(new Random(), shift(-1, 2, 5, 0, 0)), new Climate(1.0), new ArrayList<>(), new LogInformation("Rivendell"));
         BudgetSimulation.simulation(location6);
         Evaluation.startEvaluation(location6.getLogInformation());
+        FunctionalAnalysis.print(location6.getLogInformation());   // STYLE: functional part, see FunctionalAnalysis
 
         Location location7 = new Location("Esgaroth", 50, 9, new Weather(new Random(), shift(0, 3, 15, 0, 0)), new Climate(2.7), new ArrayList<>(), new LogInformation("Esgaroth"));
         BudgetSimulation.simulation(location7);
         Evaluation.startEvaluation(location7.getLogInformation());
+        FunctionalAnalysis.print(location7.getLogInformation());   // STYLE: functional part, see FunctionalAnalysis
 
         Location location8 = new Location("Isengard", 70, 4, new Weather(new Random(), shift(4, 0, -5, 60, 0)), new Climate(2.1), new ArrayList<>(), new LogInformation("Isengard"));
         BudgetSimulation.simulation(location8);
         Evaluation.startEvaluation(location8.getLogInformation());
+        FunctionalAnalysis.print(location8.getLogInformation());   // STYLE: functional part, see FunctionalAnalysis
 
         Location location9 = new Location("Khazad-dum", 90, 3, new Weather(new Random(), shift(-12, 0, -8, 0, 0)), new Climate(1.6), new ArrayList<>(), new LogInformation("Khazad-dum"));
         BudgetSimulation.simulation(location9);
         Evaluation.startEvaluation(location9.getLogInformation());
+        FunctionalAnalysis.print(location9.getLogInformation());   // STYLE: functional part, see FunctionalAnalysis
 
         Location location10 = new Location("Bree", 40, 6, new Weather(new Random(), shift(0, 0, 0, 0, 0)), new Climate(1.2), new ArrayList<>(), new LogInformation("Bree"));
         BudgetSimulation.simulation(location10);
         Evaluation.startEvaluation(location10.getLogInformation());
+        FunctionalAnalysis.print(location10.getLogInformation());   // STYLE: functional part, see FunctionalAnalysis
 
 
     }
