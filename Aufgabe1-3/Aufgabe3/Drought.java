@@ -6,6 +6,10 @@ package Aufgabe3;
  * Drought: more likely when it is hot, the water reserve is low and the air is dry.
  * F = a*CC + b*RG + c*Temp - d*Water - e*Humidity
  * Effect: temperature up, water reserve down, humidity down.
+ *
+ * STYLE: object-oriented subclass of Calamity
+ * Contract: a valid substitute for Calamity, it needs nothing extra, adds no state
+ *
  */
 public class Drought extends Calamity {
     private static final double A = 0.8;   // climate coefficient

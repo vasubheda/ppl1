@@ -9,11 +9,19 @@ import java.util.List;
  *
  * The result of one monthly update of the public acceptance: the new PA value, how much it changed and which
  * indicators caused the drop.
- * The cause names are the names of SimConstants.INDICATOR_NAMES, so TeamAdapter can translate them back
- * into indicator indexes.
+ * The cause names are the names of SimConstants.INDICATOR_NAMES
  *
  * Values are set once in the constructor and can only be read with getters,
  * nobody can change the result afterwards (data hiding).
+ *
+ * STYLE: object-oriented
+ *
+ * Invariant: the object is immutable, every getter always returns the same content.
+ *
+ * GOOD: Weak coupling, final fields and an unmodifiable copy of the list.
+ *
+ * Precondition: causes is not null.
+ * Postcondition: values stored as given, getCauses is an unmodifiable copy.
  */
 public class PAResult {
     private final double pa;

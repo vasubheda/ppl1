@@ -11,7 +11,6 @@ import java.util.Random;
  * Weather of one location (the same object that Location contains). It have 7 indicators:
  * top temperature, water reserve, CO2, humidity, fine dust, cloudiness and wind speed.
  * The indicators are stored in an array, the positions are the index constants of SimConstants,
- * so the simulation - TeamAdapter and Weather use the same numbering.
  *
  * A simulation year has SimConstants.MONTHS_PER_YEAR * DAYS_PER_MONTH days (90 days). We see them as the
  * summer season (June to August), like the temperature range 15 to 37C.
@@ -25,6 +24,10 @@ import java.util.Random;
  * values with getters and let calamities change single indicators. It does not know the budget,
  * the measures or how many years the simulation runs, the simulation owns the day loop.
  *
+ * Invariant: every indicator value always stays between its min and max.
+ * History constraint: values change only through nextDay, changeIndicator and stabilize; nextDay is called once per simulated day
+ * Precondition for all methods: only one thread uses the object at a time.
+ *
  * Changes compared to Aufgabe 1:
  *  - 5 new indicators besides temperature and water.
  *  - Gaussian drift and pull back to normal instead of uniform random and a hard border,
@@ -32,10 +35,9 @@ import java.util.Random;
  *  - temperature follows real summer values of Vienna, CO2 follows the real yearly trend,
  *    all numbers are in one place and easy to change.
  *
- * Design decision: all indicators are in this one class.
- * only needs one more setRule code. An indicator with special behaviour like the season of the temperature or
- * the trend of CO2, needs one more case in normalValue.
+ * STYLE: this class is a mix of both paradigms, with the module part procedural and the object part OO.
  */
+
 
 public class Weather {
     // Module part: indicators
@@ -68,11 +70,17 @@ public class Weather {
      */
     private static final double CO2_TREND_PER_DAY = 2.5 / DAYS_PER_YEAR;
 
+    // BAD: procedural, global data - min/max of every indicator are stored twice, here and in SimConstants, and only a
+    // comment says they must match. If one copy changes alone, nothing fails but the classes use different ranges.
+    // Better: one range table, in SimConstants that Weather reads.
+
     /*
      * The ranges are as INDICATOR_MIN /INDICATOR_MAX in SimConstants
      * Sigma and pull are chosen so that a normal day and the recovery after a
      * calamity change an indicator by less than SimConstants.SPIKE_THRESHOLD (15 % of the range), otherwise the
      * simulation would see a calamity where there is none
+     *
+     * STYLE: procedural, hey are static, belong to the class not to an object, and are shared global-style data.
      */
     static {
         //      index                    normal  ccEffect sigma  pull   min     max
@@ -85,7 +93,12 @@ public class Weather {
         setRule(SimConstants.WINDSPEED,  12.0,   0.0,     3.0,   0.4,     0.0, 100.0);  // km/h
     }
 
-    /** stores the rules of one indicator in the static arrays */
+    // Bad: procedural, global data - setRule takes 6 doubles in a row and fills 6 arrays; swapped arguments
+    // compile without error. Better: a small immutable class Rule with named fields, one array of Rule.
+
+    /** stores the rules of one indicator in the static arrays.
+     * STYLE: procedural, it is static, creates no object,
+     * and only fills the shared arrays from its parameters*/
     private static void setRule(int i, double normal, double ccEffect, double sigma, double pull,
                                 double min, double max) {
         NORMAL[i] = normal;
@@ -102,7 +115,13 @@ public class Weather {
      * The values of the current day are private. Other classes cannot change them directly,
      * they only send messages (nextDay, changeIndicator, getters) and the Weather object
      * decides itself how its state changes. State and behaviour are together in one object.
-     */
+     *
+     * STYLE: object-oriented because all are private.
+     * */
+
+    // GOOD: Cohesion, coupling - values are private and every change is cut to the range, so invariant is kept in one
+    // class; Weather gets plain data only and knows no Calamity or PA, so it can be changed and tested alone.
+
     private final double[] values = new double[N];
     private final Random random;
     private int dayCount = 0;
@@ -112,14 +131,19 @@ public class Weather {
     */
     private final double[] normalShift;
 
-    /** creates the weather with the standard climate (no per-location shift) */
+    /** creates the weather with the standard climate (no per-location shift)
+     * Precondition: random is not null. */
     public Weather(Random random) {
         this(random, new double[N]);
     }
 
     /**
-     * creates the weather with a shared random generator and a per-location normal shift (length 7, one offset per indicator in SimConstants order).
+     * creates the weather with a shared random generator and a per-location normal shift (one offset per indicator in SimConstants order).
      * The weather then moves around these shifted normal values.
+     *
+     * Precondition: random is not null; normalShift is not null and has at least 7 entries.
+     *
+     * Postcondition: invariant holds. The weather keeps its own copy of normalShift
      */
     public Weather(Random random, double[] normalShift) {
         this.random = random;
@@ -129,17 +153,12 @@ public class Weather {
             values[i] = SimConstants.clamp(start, MIN[i], MAX[i]);
         }}
 
-    /** creates the weather with a shared random generator and picks start values near the normal values */
-    /*public Weather(Random random) {
-        this.random = random;
-        for (int i = 0; i < N; i++) {
-            double start = normalValue(i, 0, SimConstants.A_MIN) + SIGMA[i] * random.nextGaussian();
-            values[i] = SimConstants.clamp(start, MIN[i], MAX[i]);
-        }}*/
-
     /**
      * Moves the weather to the next day. last10Days are the last 0 - 10 days (oldest first,
      * with SimConstants indexes), climateCoefficient is A of the climate of the location (A_MIN = no change).
+     *
+     * Postcondition: day counter + 1; every indicator moved towards its target plus drift and is still in its range;
+     * last10Days is not changed.
      *
      * How one day works for every indicator:
      *  1. target = mostly the normal value of the day, partly the mean of the last days (weather "remembers").
@@ -153,6 +172,8 @@ public class Weather {
      * simulation gives plain data, a list of double arrays, and the rules are read from
      * the static tables. The result is stored in the private state of this object, which is
      * only reachable through its methods.
+     *
+     * STYLE: object oriented, they read and change the private state, and dayCount remembers history between calls
      */
 
     public void nextDay(List<double[]> last10Days, double climateCoefficient) {
@@ -165,8 +186,7 @@ public class Weather {
             }
             double drift = SIGMA[i] * random.nextGaussian();
             values[i] = SimConstants.clamp(values[i] + PULL[i] * (target - values[i]) + drift, MIN[i], MAX[i]);
-        }
-    }
+        }}
 
     /**
      * Sudden change of one indicator, used by calamities like drought: temperature up, water down.
@@ -182,6 +202,10 @@ public class Weather {
      * so that built infrastructure (water reservoir, cooling systems, ...) makes the weather of the location less extreme.
      * strength is the pull factor capped at STABILIZE_MAX so infrastructure never fully controls the weather.
      * The range is kept as a safety net. climateCoefficient is A, like in nextDay.
+     *
+     * Precondition: index is a SimConstants index, climateCoefficient is finite.
+     *
+     * Postcondition: value moves towards today's normal value, never away from it..
      */
     public void stabilize(int index, double strength, double climateCoefficient) {
         double target = normalValue(index, dayCount, climateCoefficient);
@@ -222,14 +246,18 @@ public class Weather {
         return values[SimConstants.WINDSPEED];
     }
 
-    // Module part: helper
-
     /**
      * Normal value of indicator i on this day, shifted by the climate coefficient A, no shift at A = A_MIN.
      * Temperature follows the summer: lowest at the beginning and the end of the season, highest in the middle.
      * CO2 rises slowly every day, all other indicators have a fixed normal level.
      * The special cases are chosen with if/else on the index.
      * The method works with its parameters, the static tables and the per-instance normalShift of this location.
+     *
+     * STYLE: OO, it is non-static and reads the instance field normalShift, so it depends on the object’s state.
+     *
+     * BAD: (no dynamic binding) temp. season and CO2 trend are special cases in an if/else on the index, and
+     * the parameter dayCount hides the field dayCount. Every new special indicator = one more branch here.
+     * Improvement can be one small class per kind of indicator - plain, seasonal, trend
      */
     private double normalValue(int i, int dayCount, double climateCoefficient) {
         double normal = NORMAL[i];
@@ -246,6 +274,10 @@ public class Weather {
      * mean of one indicator over the given days, Double.NaN if there are no days
      *
      * A simple loop over plain arrays, the data structure is fully visible to the procedure
+     *
+     * STYLE: procedural, because static, works only on its parameters, no object, no state, same input gives same output
+     *
+     * GOOD: Procedural, simple control flow, one loop, one result; it only reads its parameters, no global variables.
      */
     private static double averageOf(List<double[]> days, int index) {
         if (days == null || days.isEmpty()) {

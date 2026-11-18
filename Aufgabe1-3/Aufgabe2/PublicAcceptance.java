@@ -25,6 +25,10 @@ import java.util.List;
  *
  * Responsibility: know the current Public Acceptance and calculate how the indicators change it. It does not know the
  * measures, the budget or the weather object, it only gets plain numbers from the simulation.
+ *
+ * Invariant: 0 <= getValue() <= 100 always
+ * History constraint: update never raises PA, increase never lowers it and decrease never raises it; update is called once per month.
+ * Precondition for all methods: only one thread uses the object at a time.
  */
 public class PublicAcceptance {
     // Module part: thresholds and penalties
@@ -37,6 +41,9 @@ public class PublicAcceptance {
      * NaN means: people do not care about this indicator.
      * Fine dust: the EU limit value for PM10 is 40 micrograms per m3 as yearly mean
      */
+    // BAD: (procedural) thresholds lives in two parallel arrays and "no threshold" is the magic value NaN that
+    // excess must check.
+    // Better option can be a small class Threshold(limit, direction) per indicator with an explicit "none".
     private static final double[] THRESHOLD = new double[SimConstants.INDICATOR_COUNT];
     // true = it is bad when the value is ABOVE the threshold, false = bad when it is BELOW (water shortage)
     private static final boolean[] BAD_WHEN_HIGH = new boolean[SimConstants.INDICATOR_COUNT];
@@ -68,7 +75,9 @@ public class PublicAcceptance {
     public PublicAcceptance() {
         this(START_PA);
     }
-    /** creates public acceptance with a chosen start value (kept inside 0 - 100) */
+    /** creates public acceptance with a chosen start value (kept inside 0 - 100)
+     * Precondition: startValue is not NaN
+     * */
     public PublicAcceptance(double startValue) {
         this.value = SimConstants.clamp(startValue, PA_MIN, PA_MAX);
     }
@@ -80,7 +89,13 @@ public class PublicAcceptance {
      * the penalties are calculated by the procedures penaltyOf and excess, which only work
      * with plain numbers and the static tables. This object then changes its own private
      * state and gives back a PAResult object.
+     *
+     * STYLE: It changes its own private value and returns PAResult.
+     *
+     * Precondition: monthlyMeans is not null
+     * Postcondition: PA = old PA minus the penalties of all violated thresholds, not below 0.
      */
+
     public PAResult update(double[] monthlyMeans) {
         double before = value;
         double totalPenalty = 0.0;
@@ -96,6 +111,10 @@ public class PublicAcceptance {
         return new PAResult(value, value - before, causes);
     }
 
+    /**
+     * Style: Object oriented.
+     */
+
     /** PA gets higher, e.g. after medium-term measures (gain >= 0) */
     public void increase(double gain) {
         value = SimConstants.clamp(value + Math.max(0.0, gain), PA_MIN, PA_MAX);
@@ -106,12 +125,16 @@ public class PublicAcceptance {
         value = SimConstants.clamp(value - Math.max(0.0, loss), PA_MIN, PA_MAX);
     }
 
-    /** returns current PA (0 to 100) */
+    /** returns current PA (0 to 100)
+     * Postcondition: 0<=result<=100
+     * */
     public double getValue() {
         return value;
     }
 
     // Module part: helper
+
+    // Good: (procedural) penaltyOf has simple control flow, only reads the tables
     /**
      * Penalty (PA points) of indicator i for its monthly mean, 0 if the threshold is not violated.
      * e is the exceedance as share of the indicator range, so all indicators are comparable.
@@ -119,6 +142,8 @@ public class PublicAcceptance {
      *
      * A static procedure that reads the global tables of the module and calculates a number
      * from its parameters with if and arithmetic, no object is involved.
+     *
+     * Style: Procedural, because is static and take value and returns.
      */
     static double penaltyOf(int i, double mean) {
         double over = excess(i, mean);
@@ -130,6 +155,8 @@ public class PublicAcceptance {
     }
 
     /** how far mean is on the bad side of the threshold, 0 or negative if it is fine, also if no threshold
+     *
+     * Style: Procedural, because is static and take value and returns.
      */
     private static double excess(int i, double mean) {
         if (Double.isNaN(THRESHOLD[i])) {

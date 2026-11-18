@@ -7,6 +7,9 @@ package Aufgabe3;
  * already cool and dry.
  * F = a*CC + b*RG - c*Temp - d*Humidity
  * Effect of flash freezing: temperature down, humidity down
+ *
+ * STYLE: object oriented subclass of Calamity
+ * Contract: a valid substitute for Calamity, needs nothing extra, adds no state.
  */
 public class FlashFreeze extends Calamity {
     private static final double A = 0.8;   // climate coefficient (more extreme weather with climate change)

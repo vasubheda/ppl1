@@ -32,6 +32,11 @@ import java.util.Random;
  * The daily check is the same for all (dailyCheck), only the formula (score) and the effect (applyEffect) are
  * different and are overridden in the subclasses. Which score() and applyEffect() run is decided at run time
  * (dynamic binding), so new calamities can be added as new subclasses without changing the rest.
+ *
+ * Precondition for all methods: only one thread uses the object at a time.
+ * Invariant: severity is 0.0 until the first start, afterwards between SEVERITY_LOW and SimConstants.SEVERITY_MAX.
+ * History constraint: dailyCheck is called once per simulated day; after a start the next start is at the earliest
+ * COOLDOWN_DAYS calls later; weather and severity change only in the call that returns true.
  */
 public abstract class Calamity {
     // days a calamity stays active after it started
@@ -51,7 +56,10 @@ public abstract class Calamity {
      * Daily check, called once per day after the weather of the day was created.
      * In the cooldown time after the last start nothing happens. Otherwise the formula is calculated and if it
      * is over the threshold, the calamity starts and changes the weather. Returns true only on the day it starts.
+     *
+     * Style: Object oriented
      */
+    // Good: (Dynamic binding) daily procedure is written once in this final method.
     public final boolean dailyCheck(Weather weather, double climateCoefficient, Random random) {
         daysSinceStart++;
         if (daysSinceStart < COOLDOWN_DAYS) {
@@ -89,7 +97,9 @@ public abstract class Calamity {
 
     // Helpers for the subclasses
 
-    /** indicator of the weather normalised to 0..1 (0 = lowest possible, 1 = highest possible value) */
+    /** indicator of the weather normalised to 0..1 (0 = lowest possible, 1 = highest possible value)
+     * Style: Procedural
+     * */
     protected static double norm(Weather weather, int index) {
         return SimConstants.normalise(index, weather.getValue(index));
     }
@@ -99,12 +109,18 @@ public abstract class Calamity {
      *
      * Static procedure that only calculates a number from its parameters and the global
      * constants of SimConstants, no object state is used.
+     *
+     * Style: Procedural
      */
+    // Good: (procedural) shock is one formula without control flow; it only reads its parameters and constants
+
     protected static double shock(int index, double severity) {
         return SimConstants.NOMINAL_SHOCK * severity * SimConstants.range(index);
     }
 
-    /** severity grows continuously with how far F is over the threshold */
+    /** severity grows continuously with how far F is over the threshold
+     * Style: Procedural
+     * */
     private static double severityFor(double overThreshold) {
         return SimConstants.clamp(SEVERITY_LOW + SEVERITY_SLOPE * overThreshold, SEVERITY_LOW, SimConstants.SEVERITY_MAX);
     }

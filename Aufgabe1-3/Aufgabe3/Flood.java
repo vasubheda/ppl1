@@ -6,6 +6,9 @@ package Aufgabe3;
  * Flood: more likely when the water reserve is high and the air is humid.
  * F = a*CC + b*RG + c*Water + d*Humidity
  * Effect: water reserve up, humidity up.
+ *
+ * STYLE: object-oriented subclass of Calamity.
+ * Contract: a valid substitute for Calamity, needs nothing extra, adds no state.
  */
 public class Flood extends Calamity {
     private static final double A = 0.8;   // climate coefficient (more heavy rain with climate change)
