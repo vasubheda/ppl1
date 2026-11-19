@@ -27,6 +27,15 @@ public class Evaluation {
 
     private static final double ACCEPTABLE_CALAMITY_PER_MONTH = 1.0;
 
+    /*
+        STYLE: object-oriented. Score bundles its data: fields private and final, set once, only read via getters.
+
+        Invariant: climate, acceptance, calamity, budget each in [0,1] (constructor is called only with clamped values)
+        total == 100*(weighted sum) and thus in [0,100]. All fields final
+
+        GOOD(immutability/high cohesion): bundles the four partial scores + total behind final fields;
+     */
+
     public static final class Score {
 
         private final double climate;
@@ -81,6 +90,8 @@ public class Evaluation {
      * Returns the total grade (0..100) too, in case a caller wants to compare several locations.
      * precondition: logInformation != null and already filled (the simulation ran, at least one month and
      * one year were logged).
+     * precondition: logInformation != null.
+     * postcondition: summary printed; return value == Score.getTotal(), in [0,100].
      */
 
     public static double startEvaluation(LogInformation logInformation) {
@@ -111,6 +122,11 @@ public class Evaluation {
     /*
         STYLE: procedural. The four score methods are static pure functions.
         they only read their parameters, create no object and keep no state. The same input always gives the same number.
+
+        GOOD(procedural): pure functions, no global/mutable state, clear control flow; easy to test and reuse.
+
+        BAD(procedural/duplicated control flow): the "if (...isEmpty()) return 0.0;" guard is copied in all four.
+        Better: one guard (or a helper) before the four calls in evaluate().
     */
 
     /**
@@ -121,6 +137,8 @@ public class Evaluation {
         if (yearlyA.isEmpty()) {
             return 0.0;
         }
+        // BAD(procedural/sentinel value): finds the last year with an Integer.MIN_VALUE sentinel + manual max loop.
+        // Better: Collections.max(yearlyA.keySet())
         int lastYear = Integer.MIN_VALUE;
         for (int year : yearlyA.keySet()) {
             lastYear = Math.max(lastYear, year);

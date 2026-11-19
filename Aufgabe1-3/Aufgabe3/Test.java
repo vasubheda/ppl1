@@ -1,5 +1,7 @@
 package Aufgabe3;
 
+import java.util.List;
+import java.util.function.Supplier;
 
 /*Allgemeine Informationen
     Arbeitaufteilung:
@@ -9,6 +11,8 @@ package Aufgabe3;
 
     Simon Hahn Use of Ai:
     I used it to explain the LVA slides to me and how I should go about to solve the task Link: https://claude.ai/share/cf914a47-1f12-43c4-ae4d-8309972f7650
+    For assignment 3 also used Claude to explain the Design-by-Contract concepts
+    For the System.out.printf in ParallelRunner.benchmark how the output is formatted and which information to include
 
     Vishwas Vikram Bheda Use of Ai:
     - I used claude to translate the assignment in English, then I used ChatGPT to clear some doubts and approaches.
@@ -44,7 +48,11 @@ public class Test {
      * and class {@link Evaluation} with method {@link Evaluation#startEvaluation(LogInformation)}
      */
     public static void main(String[] args) {
-
+        // pre parallel part:
+        // GOOD (procedural): main is a flat top-to-bottom sequence, no global mutable state, each location independent.
+        // BAD (procedural/copy-and-paste): the four-line block below is repeated ten times, only the
+        // parameters differ. Better: keep the parameters in an array and loop once.
+        /*
         Location location1 = new Location("Minas Tirith", 80, 8, new Weather(new Random(), shift(0, 0, 0, 0, 0)), new Climate(1.2), new ArrayList<>(), new LogInformation("Minas Tirith"));
         BudgetSimulation.simulation(location1);
         Evaluation.startEvaluation(location1.getLogInformation());
@@ -94,6 +102,33 @@ public class Test {
         BudgetSimulation.simulation(location10);
         Evaluation.startEvaluation(location10.getLogInformation());
         FunctionalAnalysis.print(location10.getLogInformation());   // STYLE: functional part, see FunctionalAnalysis
+        */
+
+        //parallel part:
+
+        Supplier<List<Location>> factory = () -> {
+            List<Location> locs = new ArrayList<>();
+            locs.add(new Location("Minas Tirith", 80, 8, new Weather(new Random(), shift(0, 0, 0, 0, 0)),    new Climate(1.2), new ArrayList<>(), new LogInformation("Minas Tirith")));
+            locs.add(new Location("Hobbiton",     55, 4, new Weather(new Random(), shift(-2, 1, 5, 0, 0)),   new Climate(1.0), new ArrayList<>(), new LogInformation("Hobbiton")));
+            locs.add(new Location("Erebor",      100, 3, new Weather(new Random(), shift(-13, 0, -10, 0, 0)),new Climate(1.9), new ArrayList<>(), new LogInformation("Erebor")));
+            locs.add(new Location("Edoras",       60, 7, new Weather(new Random(), shift(2, -1, 0, 0, 10)),  new Climate(1.4), new ArrayList<>(), new LogInformation("Edoras")));
+            locs.add(new Location("Barad-dur",    20, 2, new Weather(new Random(), shift(12, -4, -25, 40, 0)),new Climate(2.7), new ArrayList<>(), new LogInformation("Barad-dur")));
+            locs.add(new Location("Rivendell",    75, 7, new Weather(new Random(), shift(-1, 2, 5, 0, 0)),   new Climate(1.0), new ArrayList<>(), new LogInformation("Rivendell")));
+            locs.add(new Location("Esgaroth",     50, 9, new Weather(new Random(), shift(0, 3, 15, 0, 0)),   new Climate(2.7), new ArrayList<>(), new LogInformation("Esgaroth")));
+            locs.add(new Location("Isengard",     70, 4, new Weather(new Random(), shift(4, 0, -5, 60, 0)),  new Climate(2.1), new ArrayList<>(), new LogInformation("Isengard")));
+            locs.add(new Location("Khazad-dum",   90, 3, new Weather(new Random(), shift(-12, 0, -8, 0, 0)), new Climate(1.6), new ArrayList<>(), new LogInformation("Khazad-dum")));
+            locs.add(new Location("Bree",         40, 6, new Weather(new Random(), shift(0, 0, 0, 0, 0)),    new Climate(1.2), new ArrayList<>(), new LogInformation("Bree")));
+            return locs;
+        };
+
+        List<Location> locations = factory.get();
+        ParallelRunner.simulateAllParallel(locations);          // paralleler Teil
+        for (Location loc : locations) {
+            Evaluation.startEvaluation(loc.getLogInformation());
+            FunctionalAnalysis.print(loc.getLogInformation());
+        }
+
+        ParallelRunner.benchmark(factory);
 
 
     }

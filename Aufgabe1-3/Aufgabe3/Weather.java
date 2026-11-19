@@ -1,7 +1,5 @@
 package Aufgabe3;
 
-import Aufgabe2.SimConstants;
-
 import java.util.List;
 import java.util.Random;
 
