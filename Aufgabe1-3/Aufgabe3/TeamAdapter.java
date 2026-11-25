@@ -9,10 +9,9 @@ import java.util.Map;
 /**
  * NOTE: Part: Vishwas, Simon and Dhananjay
  * STYLE: procedural module (static methods only, no state) at the boundary between the procedural simulation and the OO classes.
- * GOOD (procedural #4, weak coupling): the simulation reaches Location, Weather, PublicAcceptance, LogInformation
- * and Infrastructure ONLY through this class. If another implementation has different method names, only this
- * file changes. We chose this over calling the getters directly in BudgetSimulation, which would have spread
- * the dependency over the whole loop.
+ * GOOD (procedural #4, weak coupling): the simulation reaches Location, Weather, PublicAcceptance, LogInformation and Infrastructure ONLY through this class.
+ * If another implementation has different method names, only this file changes.
+ * We chose this over calling the getters directly in BudgetSimulation, which would have spread the dependency over the whole loop.
  */
 public final class TeamAdapter {
     private TeamAdapter() {
@@ -61,9 +60,9 @@ public final class TeamAdapter {
 
     // ---------------------------------------------------- Infrastructure
     /**
-     * Adds an investment to the infrastructure of the location. The location already has infrastructure, so an
-     * entry with the same name (ignoring case) is built on: for every linked indicator, amount is added to its
-     * value in the map of affected indicators. Only if no entry with this name exists, a new one is created.
+     * Adds an investment to the infrastructure of the location.
+     * The location already has infrastructure, so an entry with the same name (ignoring case) is built on: for every linked indicator, amount is added to its value in the map of affected indicators.
+     * Only if no entry with this name exists, a new one is created.
      *
      * @param measureName name of the bought measure (e.g. "Water reservoir")
      * @param indicators  indicator indexes (SimConstants.TEMP ...) the measure is linked to
@@ -125,10 +124,9 @@ public final class TeamAdapter {
     }
 
     /**
-     * Lets the built infrastructure of the location influence the weather: every infrastructure pulls the
-     * indicators it affects a bit back toward normal (resilience). The more was invested in a measure, the
-     * stronger but saturating the effect (SimConstants.infrastructureStrength), so infrastructure makes the
-     * weather calmer without ever fully controlling it.
+     * Lets the built infrastructure of the location influence the weather:
+     * every infrastructure pulls the indicators it affects a bit back toward normal (resilience).
+     * The more was invested in a measure, the stronger but saturating the effect (SimConstants.infrastructureStrength), so infrastructure makes the weather calmer without ever fully controlling it.
      */
     public static void applyInfrastructure(Location location, double climateCoefficient) {
         Weather weather = location.getWeather();

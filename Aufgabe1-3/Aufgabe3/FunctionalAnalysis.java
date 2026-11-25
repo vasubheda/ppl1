@@ -13,54 +13,46 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Part: Vishwas (functional part of assignment 3)
- *
- * STYLE: functional (the print procedure at the bottom is the only procedural part, see there).
- * Evaluates a finished simulation run of one location from its LogInformation, in two parts:
- *  A) stream analysis of the monthly records and yearly budgets (sums, rankings, moving average),
- *  B) a recursive what-if projection of the climate coefficient A with different mitigation levels.
- *
- * How it fits with the rest of the program (referential transparency):
- *  - It runs only AFTER the simulation, from Test. It never changes Location, LogInformation or any simulation object.
- *  - All functions are static, read only their parameters (and the constants of SimConstants), have no state,
- *    no random numbers and no output. Same arguments always give the same result.
- *  - MonthRecord and YearBudget are immutable. The collections from LogInformation are mutable, so the entry
- *    point print() copies them first and gives the pure functions only the copies.
- *  - Only print() writes to System.out. It is the single place with a side effect.
- *
+* Part : Vishwas (functional part of assignment 3)
+* STYLE : Functional (The print procedure at the bottom is the only procedural part)
+* This evaluates a finished simulation run of 1 location from its LogInformation, in 2 parts :
+* A. Stream analysis of the monthly records and yearly budgets (sums, rankings, moving average).
+* B. A recursive what-if projection of the climate coeff. A with different mitigation levels.
+*
+* This runs after simulation from test. It never changes anything else.
+* point print() copies the collections from LogInformation first and gives the pure functions only the copies.
+* Only print() writes to System.out.
  */
 public final class FunctionalAnalysis {
 
     private FunctionalAnalysis() {
     }
 
-    // ---------------------------------------------------------------- Part A: streams
+    // ---------------------------------------------------------------- Part A - Streams
 
     /**
-     * Higher-order function: groups the items by key and sums the value of each item. Result is sorted by key.
-     * STYLE: functional. pure, the two function parameters decide what is grouped and summed.
-     * precondition: items, keyOf and valueOf are not null; keyOf never returns null.
-     * postcondition: the result is a new map, the sum of its values equals the sum of valueOf over all items.
-     */
+    * Higher-order function : This groups the items by key and sums the value of each item. Result is sorted by key.
+    * STYLE : functional. Pure, the two function parameters decide what is grouped and summed.
+    * precondition - Items, keyOf and valueOf are not null and keyOf never returns null
+    * postcondition - The result is a new map, the sum of its values equals the sum of valueOf over all items.
+ */
     static <T, K extends Comparable<K>> Map<K, Double> sumBy(List<T> items, Function<T, K> keyOf,
                                                             ToDoubleFunction<T> valueOf) {
         return items.stream().collect(Collectors.groupingBy(keyOf, TreeMap::new, Collectors.summingDouble(valueOf)));
     }
 
-    /** calamities per year, e.g. {1=3.0, 2=1.0, ...} */
+    // calamities per year, e.g. {1=3.0, 2=1.0, ....}
     static Map<Integer, Double> calamitiesPerYear(List<MonthRecord> months) {
         return sumBy(months, MonthRecord::getYear, MonthRecord::getCalamities);
     }
 
-    /** money paid for short-term measures per year */
+    // money paid for the short-term measures per year
     static Map<Integer, Double> shortTermPerYear(List<MonthRecord> months) {
         return sumBy(months, MonthRecord::getYear, MonthRecord::getShortTermTotal);
     }
 
-    /**
-     * the n years with the highest value, worst first.
-     * postcondition: at most n entries, sorted by descending value.
-     */
+    // The n years with the highest value, worst first.
+    // postcondition: at most n entries, sorted by descending value.
     static List<Map.Entry<Integer, Double>> worstYears(Map<Integer, Double> perYear, int n) {
         return perYear.entrySet().stream()
                 .sorted(Map.Entry.<Integer, Double>comparingByValue().reversed())
@@ -68,7 +60,7 @@ public final class FunctionalAnalysis {
                 .collect(Collectors.toList());
     }
 
-    /** how often each medium-term measure was bought over the whole run (measure name -> count) */
+    // this shows how often each medium-term measure was bought over the whole run (measure name -> count)
     static Map<String, Integer> purchaseTotals(List<MonthRecord> months) {
         return months.stream()
                 .flatMap(m -> m.getMediumPurchases().entrySet().stream())
@@ -76,10 +68,10 @@ public final class FunctionalAnalysis {
     }
 
     /**
-     * share (0..1) of the whole budget that went to immediate, medium and long-term measures.
-     * precondition: budgets is not empty and its total is greater than 0.
-     * postcondition: array of 3 values {immediate, medium, longTerm} that add up to 1.
-     */
+    * returns the share (0..1) of the whole budget that went to immediate, medium and long-term measures.
+    * precondition - the budgets is not empty and its total is greater than 0.
+    * postcondition - the array of 3 values (immediate, medium, longTerm) that add up to 1.
+ */
     static double[] budgetShares(List<YearBudget> budgets) {
         double total = budgets.stream().mapToDouble(YearBudget::getTotal).sum();
         return new double[]{
@@ -93,57 +85,56 @@ public final class FunctionalAnalysis {
     }
 
     /**
-     * moving average over a window of the given values.
-     * precondition: window is at least 1.
-     * postcondition: result has values.size() - window + 1 entries (empty if values is shorter than window).
-     */
+    * The moving average over a window of given values.
+    * precondition: window is atleast 1.
+    * postcondition: result has values.size() - window + 1 entries (empty if values is shorter than window).
+ */
     static List<Double> movingAverage(List<Double> values, int window) {
         return IntStream.rangeClosed(0, values.size() - window)
                 .mapToObj(i -> values.subList(i, i + window).stream().mapToDouble(Double::doubleValue).average().orElse(0.0))
                 .collect(Collectors.toList());
     }
 
-    /** calamities per decade (decade 0 = years 1-10, decade 1 = years 11-20, ...) */
+    // calamities per decade (decade 0 = years 1-10, decade 1 = 11-20,....)
     static Map<Integer, Double> calamitiesPerDecade(List<MonthRecord> months) {
         return sumBy(months, m -> (m.getYear() - 1) / 10, MonthRecord::getCalamities);
     }
 
     /**
-     * Higher-order function: mean of a number taken from every item.
-     * postcondition: 0.0 for an empty list, otherwise the arithmetic mean.
-     */
+    * Higher-order function : gives the mean of a number taken from every item.
+    * postcondition : 0.0 for an empty list, otherwise the arithmetic mean.
+ */
     static <T> double meanOf(List<T> items, ToDoubleFunction<T> valueOf) {
         return items.stream().mapToDouble(valueOf).average().orElse(0.0);
     }
 
     /**
-     * the months (by year) in which public acceptance was below the limit, as "year" -> number of such months.
-     * postcondition: only years with at least one such month are in the result.
-     */
+     * Gives the months (by year) in which public acceptance was below the limit, as "year" -> number of such months.
+     * postcondition - only years with at least one such month are in the result.
+ */
     static Map<Integer, Long> lowAcceptanceMonths(List<MonthRecord> months, double limit) {
         return months.stream()
                 .filter(m -> m.getPaAfterMeasures() < limit)
                 .collect(Collectors.groupingBy(MonthRecord::getYear, TreeMap::new, Collectors.counting()));
     }
 
-    // ---------------------------------------------------------------- Part B: recursion
+    // ---------------------------------------------------------------- Part B - recursion
 
     /**
-     * Recursive projection of the climate coefficient: applies the step function once per year.
-     * STYLE: functional. recursion instead of a loop, step is a function parameter (higher-order).
-     * precondition: years is not negative, step is not null.
-     * postcondition: result = step applied years times to a, for years = 0 it is a itself.
-     */
+    * Recursive projection of the climate coeff. : applies the step function once per year.
+    * STYLE : functional, recursion instead of a loop, step is a functional parameter(higher-order).
+    * precondition - years is not negative, step is not null.
+    * postcondition - result = step applied years times to a, for years=0 it is a itself.
+ */
     static double projectA(double a, int years, DoubleUnaryOperator step) {
         return years == 0 ? a : projectA(step.applyAsDouble(a), years - 1, step);
     }
 
     /**
-     * Recursive search: the first year (counted from year) in which A is above the limit, empty if it never is
-     * within the remaining years.
-     * STYLE: functional. recursion with the Optional type instead of a loop with a break.
-     * precondition: remaining is not negative, step is not null.
-     */
+    * Recursive search : the first year(counted from year) in which A is above the limit, empty if it never is within the remaining years.
+    * STYLE : functional, recursion with the Optional type instead of a loop with a break.
+    * precondition: remaining is not negative, step is not null.
+ */
     static Optional<Integer> firstYearAbove(double a, int year, int remaining, double limit, DoubleUnaryOperator step) {
         if (a > limit) {
             return Optional.of(year);
@@ -152,7 +143,7 @@ public final class FunctionalAnalysis {
                 : firstYearAbove(step.applyAsDouble(a), year + 1, remaining - 1, limit, step);
     }
 
-    /** one yearly step of A with a fixed reference CO2 level and the given mitigation (uses the pure ClimateUpdater) */
+    // one yearly step of A with a fixed reference CO2 level and the given mitigation (uses the pure ClimateUpdater)
     static DoubleUnaryOperator stepWith(double mitigation) {
         return a -> ClimateUpdater.nextA(a, SimConstants.CO2_REF, mitigation);
     }
@@ -160,10 +151,10 @@ public final class FunctionalAnalysis {
     // ---------------------------------------------------------------- procedural boundary
 
     /**
-     * STYLE: procedural (boundary between the simulation and the functional part).
-     * Takes the log of one finished run, copies its data, calls the pure functions and prints the results.
-     * precondition: the simulation of this log is finished (300 monthly records, 100 yearly budgets).
-     */
+    * STYLE : procedural (boundary between the simulation and the functional part).
+    * Takes the log of one finised run, copies its data, calls the pure functions and prints the results.
+    * precondition : the simulation of this log is finished
+ */
     public static void print(LogInformation log) {
         List<MonthRecord> months = new ArrayList<>(log.getMonthlyRecords());
         List<YearBudget> budgets = new ArrayList<>(new TreeMap<>(log.getYearlyBudgets()).values());
@@ -185,7 +176,7 @@ public final class FunctionalAnalysis {
         System.out.printf("Mean short-term cost per month: %.2f, years with a month of public acceptance below 20: %s%n",
                 meanOf(months, MonthRecord::getShortTermTotal), lowAcceptanceMonths(months, 20.0).size());
 
-        double start = climate.get(1);        // A at the end of year 1 is the start of the what-if
+        double start = climate.get(1);        // A at the end of year one is the start of what-if
         int years = SimConstants.YEARS - 1;
         System.out.printf("What-if A in year %d (start %.2f): no measures %.2f, weak %.2f, strong %.2f, real run %.2f%n",
                 SimConstants.YEARS, start,

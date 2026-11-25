@@ -5,17 +5,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * NOTE: Part: Vishwas.
- * STYLE: object-oriented. An immutable value object, all fields private final.
- * GOOD (OO #8, weak coupling): the simulation hands the log one finished object per month. The mutable map is copied in the
- * constructor (new LinkedHashMap + unmodifiableMap), so the caller keeps no alias to the log's data and a later
- * change of the planner's Result cannot change the log. The alternative of storing the planner's Result directly
- * would couple the log to the planner.
+ * NOTE : Part - Vishwas.
+ * STYLE : object oriented. An immutable value object, all fields private final.
+ * GOOD (OO #8, weak coupling) : The simulation hands the log one finished object per month.
+ * The mutable map is copied in the constructor (new LinkedHashMap + unmodifiableMap), so the caller keeps no alias to the log's data and a later change of the planner's result cannot change the log.
+ * The alternative of storing the planner's result directory would couple the log to the planner.
  *
- * Reported after every month: short-term measures, medium-term measures, public acceptance.
- * invariant (precondition of the constructor): year in [1,100], month in [1,3], calamities >= 0,
- * shortTermTotal >= 0, shortTermDailyAverage = shortTermTotal / DAYS_PER_MONTH, mediumSpent >= 0,
- * paAfterUpdate and paAfterMeasures in [0,100], paAfterMeasures >= paAfterUpdate. The object does not change after the constructor.
+ * Reported after every month : short-term measures, mediumterm measures, public acceptance.
+ * invariant (precondition of the constructor) : year in [1,100], month in [1,3], calamities >= 0,
+ * shortTermTotal >= 0, shortTermDailyAverage = shortTermTotal/DAYS_PER_MONTH, mediumSpent>=0, paAfterUpdate and paAfterMeasures in [0,100], paAfterMeasures>=paAfterUpdate.
+ * The object does not change after the constructor.
  */
 
 public final class MonthRecord {

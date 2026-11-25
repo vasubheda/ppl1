@@ -3,14 +3,14 @@ package Aufgabe3;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-// NOTE: Part: Vishwas (simulation, immediate measures)
+// NOTE: Part - Vishwas
 // STYLE: object-oriented. The object remembers the weather of yesterday and the calamity track record in private fields.
-// The static helpers evaluate and better are procedural (pure functions on their parameters).
-// BAD (OO #3, class cohesion): this class has two jobs, (1) detecting a spike from two consecutive days (check)
-// and (2) keeping the multi-year statistics (yearCounts, pastYears, endYear, probability) for LongTermPlanner.
+// STYLE : object-oriented. The object remembers the weather of yesterday and the calamity track record in private fields.
+// The static helpers evaluate and better are procedural
+// BAD (OO #3, class cohesion): this class has 2 jobs, 1 is detecting a spike from two consecutive days (check)
+// and 2 is keeping the multi-year statistics (yearCounts, pastYears, endYear, prob.) for LongTermPlanner.
 // They only share the detected type. This came from adding the statistics where the events were detected.
-// Better: a separate CalamityStatistics class that gets each Event from the simulation; then the detector would
-// only need "previous", and LongTermPlanner would not depend on the detector.
+// Better: a separate CalamityStatistics class that gets each Event from the simulation; then the detector would only need "previous", and LongTermPlanner would not depend on the detector.
 /**
 * Detects calamities from daily weather.
 * A calamity changes several indicators significantly, from one day to the next (a spike), all the other dynamics like gradual recovery, normal increments,are not considered spikes. (change per day below SPIKE_THRESHOLD of the indicator range).
@@ -55,8 +55,8 @@ public class CalamityDetector {
 
     /**
      * precondition: today.length == SimConstants.INDICATOR_COUNT, called once per simulated day in order.
-     * postcondition: returns null (no calamity, also on the first day and during the SUPPRESS_DAYS after a detection)
-     * or an Event whose severity is in [SEVERITY_MIN, SEVERITY_MAX]. A detected event is counted in this year's statistics.
+     * postcondition: returns null or an Event whose severity is in [SEVERITY_MIN, SEVERITY_MAX].
+     * A detected event is counted in this year's statistics.
      */
     public Event check(double[] today) {
         if (previous == null) {
@@ -90,8 +90,7 @@ public class CalamityDetector {
 
     /**
      * precondition: called once per year after the last check() of that year.
-     * postcondition: this year's counts are in the track record (at most PROBABILITY_WINDOW_YEARS years kept),
-     * the counters of the new year are 0.
+     * postcondition: this year's counts are in the track record (at most PROBABILITY_WINDOW_YEARS years kept), the counters of the new year are 0.
      */
     public void endYear() {
         pastYears.addLast(yearCounts.clone());

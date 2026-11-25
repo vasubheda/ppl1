@@ -108,10 +108,10 @@ public class MediumTermPlanner {
      * @param causeIndicators indicator indexes (SimConstants.TEMP ...) whose threshold was violated
      * @param budget          provides the monthly allowance and takes the payments
      *
-     * precondition: paValue in [0,100], causeIndicators contains only valid indicator indexes (0..6), budget != null,
-     * budget.startMonth() was called for this month.
-     * postcondition: result.getSpent() was taken from budget (via trySpendMedium) and equals the sum of the costs of
-     * result.getPurchases(). result.getGain() >= 0. Nothing is bought if there are no causes or paValue >= 100.
+     * precondition: paValue in [0,100], causeIndicators contains only valid indicator indexes (0..6), budget != null, budget.startMonth() was called for this month.
+     * postcondition: result.getSpent() was taken from budget (via trySpendMedium) and equals the sum of the costs of result.getPurchases().
+     * result.getGain() >= 0.
+     * Nothing is bought if there are no causes or paValue >= 100.
      * If PA could not drop (delta = 0) but causes exist, the cheapest measure of each cause is tried.
      */
     public Result act(double paDelta, double paValue, List<Integer> causeIndicators, BudgetCalculator budget) {

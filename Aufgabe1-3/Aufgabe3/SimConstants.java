@@ -1,7 +1,7 @@
 package Aufgabe3;
 
 /**
- * NOTE: Part: Vishwas (simulation, budget and climate updation), Simon
+ * NOTE: Part: Vishwas, Simon
  * STYLE: procedural module (private constructor, only static constants and pure static functions).
  * Every tunable number of the simulation is here, so the model can be tuned in one place.
  */

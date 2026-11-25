@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-// NOTE: Part: Vishwas (simulation, budget and climate updation)
-// STYLE: procedural. The simulation is one static procedure (no BudgetSimulation object exists). It owns the day /
-// month / year loops and only reads and changes the OO objects through TeamAdapter.
+// NOTE : Part - Vishwas
+// STYLE : procedural. The simulation is one static procedure (no BudgetSimulation object exists). It owns the day/month/year loops and only reads and changes the OO objects through TeamAdapter.
 /**
 * Runs the 100 year simulation of ONE location. A year has 3 months of 30 days.
 * The flow :
@@ -31,9 +30,8 @@ public class BudgetSimulation {
         CalamityDetector detector = new CalamityDetector();
         MediumTermPlanner mediumPlanner = new MediumTermPlanner();
         LongTermPlanner longTermPlanner = new LongTermPlanner();
-        // BAD (procedural #4, hard-to-see alias): this list is handed to TeamAdapter / Weather.nextDay and is also
-        // changed here (add / remove(0)) while the Weather class only reads it. The aliasing is correct today, but a
-        // careless change in Weather would silently change our history. It came from avoiding a copy per day.
+        // BAD(procedural #4, hard-to-see alias): this list is handed to TeamAdapter/Weather.nextDay and is also changed here (add/remove(0)) while the Weather class only reads it.
+        // The aliasing is correct today, but a careless change in Weather would silently change our history. It came from avoiding a copy per day.
         // Better: give Weather an unmodifiable view (Collections.unmodifiableList) or a copy of the last 10 days.
         List<double[]> history = new ArrayList<>();    // the last 10 days that the weather is given
 
@@ -44,11 +42,9 @@ public class BudgetSimulation {
         calamityList.add(new Flood());
         calamityList.add(new FlashFreeze());
 
-        // BAD (procedural #5, control flow): the day, month and year logic is one method of about 80 lines with
-        // four nested loops, so the flow is hard to follow and the local variables (monthSum, yearSum,
-        // shortTermTotal, calamities) live far from their use. This grew because every new requirement
-        // was added into the loop. Better: simulateDay / closeMonth / closeYear as separate procedures that
-        // return their results.
+        // BAD (procedural #5, control flow): the day, month and year logic is one method of about 80 lines with four nested loops, so the flow is hard to follow and the local variables (monthSum, yearSum, shortTermTotal, calamities) live far from their use.
+        // This grew because every new requirement was added into the loop.
+        // Better: simulateDay / closeMonth / closeYear as separate procedures that return their results.
         for (int year = 1; year <= SimConstants.YEARS; year++) {
             budget.startYear();
             double[] yearSum = new double[SimConstants.INDICATOR_COUNT];
@@ -114,8 +110,8 @@ public class BudgetSimulation {
         }
     }
 
-    // GOOD (procedural #1): a pure static procedure, only reads its parameters, creates a new array and uses no
-    // global variable and no alias. The same input always gives the same output, so it is easy to test and reuse.
+    // GOOD (procedural #1): a pure static procedure, only reads its parameters, creates a new array and uses no global variable and no alias.
+    // The same input always gives the same output, so it is easy to test and reuse.
     private static double[] mean(double[] sum, int days) {
         double[] result = new double[sum.length];
         for (int i = 0; i < sum.length; i++) {
