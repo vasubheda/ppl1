@@ -5,8 +5,8 @@ import java.util.function.Supplier;
 
 /*Allgemeine Informationen
     Arbeitaufteilung:
-    Simon: Evaluation, Infrastructure, Test, LogInformation, Location, SimConstants, TeamAdapter
-    Vishwas: BudgetCalculator, BudgetSimulation, CalamityDetector, ClimateUpdater, LongTermPlanner, MediumTermPlanner, MonthRecord, SimConstants, TeamAdapter, YearBudget
+    Simon: Evaluation, Infrastructure, Test, LogInformation, Location, SimConstants, TeamAdapter, ParallelRunner
+    Vishwas: BudgetCalculator, BudgetSimulation, CalamityDetector, ClimateUpdater, LongTermPlanner, MediumTermPlanner, MonthRecord, SimConstants, TeamAdapter, YearBudget, FunctionalAnalysis.
     Jay: Calamity, Climate, Drought, FlashFreeze, Flood, PAResult, PublicAcceptance, Weather
 
     Simon Hahn Use of Ai:
@@ -15,12 +15,17 @@ import java.util.function.Supplier;
     For the System.out.printf in ParallelRunner.benchmark how the output is formatted and which information to include
 
     Vishwas Vikram Bheda Use of Ai:
-    - I used claude to translate the assignment in English, then I used ChatGPT to clear some doubts and approaches.
-    - I used AI to understand how to use the Weather, Calamity, Tests, Evaluation, Infrastructure, Location, LogInformation, PublicAcceptence classes to integrate it into my simulation.
+    - I used claude to translate the assignment 3 in English, then I used ChatGPT to understand how I can make Functional part feasible, I discussed my approach of taking the LogInformation and doing post processing, and created a concrete plan for myself.
+    - Link - https://claude.ai/share/30718e74-5cdf-43a6-9678-74c6d6c49f0b
 
     Dhananjay Sharma Use of Ai:
     - I used claude to translate the assignment in English, then chatted with Claude to help clear my doubts on implementation.
     - Link - https://claude.ai/share/b0176886-1f03-4753-9223-7b309590c4e5
+
+    Rough structure of the program :
+    - Test.main builds 4 locations (Weather, Climate, PublicAcceptance, Infrastructure list, LogInformation)
+    - For each one, it calls BudgetSimulation(location), which runs 100 years of 3 months x 30 days, everyday Weather -> CalamityDetector -> immediate measures, every month PublicAcceptance + MediumTermPlanner (Infrastructure), every year LongTermPlanner + ClimateUpdater, with the money managed by BudgetCalculator/YearBudget.
+    Everything is recorded in LogInformation, and Evaluation.startEvaluation(log) then scores the run (Calamity subclasses: Drought, Flood FlashFreeze).
 
  */
 

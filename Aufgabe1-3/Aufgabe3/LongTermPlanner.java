@@ -3,7 +3,7 @@ package Aufgabe3;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-// NOTE: Part: Vishwas (simulation, long-term measures)
+// NOTE: Part: Vishwas
 // STYLE: object-oriented. The planner keeps the invested money and the levels of the five measures in private arrays.
 /**
 * Once a year, the remaining budgt is split on the 5 long-term measures, the measures are scored by the formula -
@@ -31,17 +31,18 @@ import java.util.Map;
  */
 public class LongTermPlanner {
     private static final int COUNT = SimConstants.LONG_NAMES.length;
-    // BAD (OO #6, cohesion): invested is only written, never read, so it is dead state. level, invested and
-    // registeredWholeLevels are parallel arrays tied together by the index, and the names, costs and mitigation
-    // values for this index sit in SimConstants. Better: one small LongTermMeasure object per measure.
+    // BAD (OO #6, cohesion) : invested is only written, never read, so it is dead state.
+    // level, invested and registeredWholeLevels are parallel arrays tied together by the index, and the names, costs and mitigation values for this index sit in SimConstants.
+    // Better: one small LongTermMeasure object per measure.
     private final double[] invested = new double[COUNT];
     private final double[] level = new double[COUNT];
     private final int[] registeredWholeLevels = new int[COUNT];  // whole levels that are already reported to the infrastructure
 
     /**
      * precondition: remainder >= 0, yearMeans.length == 7, pa in [0,100], detector != null, once per year.
-     * postcondition: the returned map has one entry per name in SimConstants.LONG_NAMES (same order) and the sum of its
-     * values equals remainder (up to rounding), all values >= 0. The levels grew by amount / cost * effectiveness.
+     * postcondition: the returned map has one entry per name in SimConstants.LONG_NAMES (same order)
+     * and the sum of its values equals remainder (up to rounding), all values >= 0.
+     * The levels grew by amount / cost * effectiveness.
      * @param remainder  The money left for the long term measures this year
      * @param yearMeans  7 indicator yearly means
      * @param detector   track record of the last years.. for calamity
@@ -84,7 +85,7 @@ public class LongTermPlanner {
         return allocation;
     }
 
-    // postcondition: result >= 0, monotonically growing with the levels (diminishing returns). No state is changed.
+    // postcondition: result >= 0, consistently growing with the levels (diminishing returns). No state is changed.
     public double mitigation() {
         double sum = 0.0;
         double sat = SimConstants.LONG_SATURATION_LEVEL;
@@ -94,11 +95,11 @@ public class LongTermPlanner {
         return sum;
     }
 
-    // BAD (OO #7, command/query mix): this looks like a query (getter) but it changes registeredWholeLevels, so
-    // calling it twice returns zeros the second time. The contract hides in a history constraint. Better: the
-    // simulation keeps what it already reported, or the method is renamed to e.g. takeNewWholeLevels().
-    // precondition: allocate() was called this year. postcondition: gained[i] >= 0 is the number of whole levels
-    // that appeared since the last call, and they are registered, so they are not returned again.
+    // BAD (OO #7, command/query mix): this looks like a query (getter) but it changes registeredWholeLevels, so calling it twice returns zeroes the second time.
+    // The contract hides in a history constraint.
+    // Better: the simulation keeps what it already reported, or the method is renamed to e.g. takeNewWholeLevels().
+    // precondition: allocate() was called this year.
+    // postcondition: gained[i] >= 0 is the number of whole levels that appeared since the last call, and they are registered, so they are not returned again.
     public int[] newWholeLevels() {
         int[] gained = new int[COUNT];
         for (int i = 0; i < COUNT; i++) {
