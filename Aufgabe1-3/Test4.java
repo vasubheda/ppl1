@@ -17,8 +17,8 @@ Simon Hahn Use of Ai:
 Vishwas Vikram Bheda Use of Ai:
         #TODO @Vishwas Vikram Bheda
 
-Dhananjay Sharma Use of Ai:
-        #TODO @dhananjaysh18
+Dhananjay Sharma Use of Ai: Used Claude
+        https://claude.ai/share/cb03bf00-e2b3-4e8b-b560-54e3498803b9
 */
 
 /*
@@ -89,7 +89,7 @@ public class Test4 {
                 && law.previous() == null && law.next() == null));
     }
 
-    // ===== classes below are ONLY for testing =====
+    // ===== classes below are ONLY for testing, NOT part of the system =====
 
     // base class for all test classes, implements doubly linked list of Action(previous and next)
     private static class TestAction implements Action {
