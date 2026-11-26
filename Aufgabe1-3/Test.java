@@ -9,7 +9,8 @@ Simon Hahn Use of Ai:
     Used Claude to Control the result: https://claude.ai/share/c8c91ee2-8520-4ef2-a6e6-27461742e818
 
 Vishwas Vikram Bheda Use of Ai:
-        #TODO @Vishwas Vikram Bheda
+        Used claude to translate the assignment, discuss the structure and clear some doubts about wording.
+        Link : https://claude.ai/share/212850d8-d4c0-407b-ae1b-20c5da6c3401
 
 Dhananjay Sharma Use of Ai: Used Claude:
         https://claude.ai/share/cb03bf00-e2b3-4e8b-b560-54e3498803b9
@@ -30,10 +31,17 @@ Dhananjay Sharma Use of Ai: Used Claude:
                        An Green-Umbrella is a advertisement campaign specifically only for a shorth-therm constructed(also why no Permanent Action).
                        it's a measure that, among other things, uses plants to cool down threw the vaporisation
                        It works among others through vaporisation which makes it EvaporativeCooling
-        CO2Binding: Sub-Type of: Permanent Action; Cause: #TODO @Vishwas Vikram Bheda
-        Forestation: Sub-Type of: Permanent Action, CO2Binding, PlantBased; Cause: #TODO @Vishwas Vikram Bheda
-        PlantBased: Sub-Type of: Action; Cause: #TODO @Vishwas Vikram Bheda
-        UrbanLandscaping: Sub-Type of: Local-Action, Permanent Action, PlantBased, EvaporativeCooling; Cause: #TODO @Vishwas Vikram Bheda
+
+        CO2Binding: Sub-Type of: Permanent Action; Cause: the CO2 is bound for at least a decade, so the effect is noticeable for much longer than one year.
+        It only strengthens the PermanentAction invariant (duration() >= 10 instead of >= 1), everything else of PermanentAction still holds.
+
+        Forestation: Sub-Type of: Permanent Action, CO2Binding, PlantBased; Cause: afforestation binds CO2 long-term (in wood and soil) and its effects last for decades -> CO2Binding (and so PermanentAction).
+        It uses plants (trees) that evaporate water -> PlantBased. Its extra assertions (forestationArea() > 0, contiguous area, not for shading) only add to those of the supertypes and contradict none of them.
+
+        PlantBased: Sub-Type of: Action; Cause: every measure using plants is a measure; PlantBased fixes nothing about duration (cut flowers vs trees) or locality (a tub vs a forest), so it is only below Action.
+
+        UrbanLandscaping: Sub-Type of: Local-Action, Permanent Action, PlantBased, EvaporativeCooling; Cause: it creates PERMANENT green space -> PermanentAction; the green space is in an urban area -> LocalAction;
+        it uses trees, shrubs and greening of facades -> PlantBased; it lowers the temperature through evaporation from leaves (raises it nowhere) -> EvaporativeCooling (and so Cooling, LocalAction).
 
     All-other No Sub-Type of Super- and Sub-Types Combinations:
         Local Action, Plant Based, Cooling, EvaporativeCooling, WaterSupply, No Sub-Type of: Permanent Action, Immediate Action;
@@ -61,6 +69,23 @@ Dhananjay Sharma Use of Ai: Used Claude:
                 Cause: a GreenUmbrella provides shade, but Shadowing is a long-term measure that explicitly excludes temporarily placed sun-umbrellas or tents
             Shadowing No Sub-Type of: EvaporativeCooling
                 Cause: Shadowing cools by blocking the sun, not by water evaporation, so it has no consumption()
+
+            CO2Binding No Sub-Type of: PlantBased
+                Cause: binding carbon so it is not part of CO2 in the air does not require plants.
+                A technical CO2Binding (e.g. storing captured CO2 underground) can be added as a new subtype and uses no plants.
+
+            UrbanLandscaping No Sub-Type of: CO2Binding, Forestation
+                Cause: the description says long-term binding of CO2 cannot be assumed for UrbanLandscaping because its maintenance releases a lot of CO2. Forestation is a CO2Binding, so the same holds for it.
+                Also UrbanLandscaping is local (urban area) while CO2Binding/Forestation have worldwide effects.
+
+            UrbanLandscaping No Sub-Type of: GreenUmbrella
+                Cause: UrbanLandscaping is permanent green space, a GreenUmbrella explicitly cannot be a permanent measure.
+
+            UrbanLandscaping No Sub-Type of: WaterSupply
+                Cause: greening streets, facades and roofs does not secure or add drinking water of an area, so capacity() > 0 could not be guaranteed.
+
+            UrbanLandscaping No Sub-Type of: Shadowing
+                Cause: Shadowing always shades a space where people spend time (transparency() > 0). UrbanLandscaping also includes greening of walls and roofs, which shades no such space (it cools by evaporation), so the Shadowing invariant cannot be guaranteed for ever UrbanLandscaping.
 */
 
 import Aufgabe4.*;
@@ -71,7 +96,7 @@ public class Test {
     public static void main(String[] args) {
         testWaterSupply();
         testSimon();
-        // TODO Vishwas
+        testVishwas();
     }
 
     // ===== Tests: Action, LocalAction, PermanentAction, ImmediateAction, WaterSupply =====
@@ -136,6 +161,90 @@ public class Test {
         TestShadowing broken = new TestShadowing("x", "y", 1, "spot", 0.0, 0.0, 5, 10, 0.5);
         Cooling bc = broken;
         System.out.println("VIOLATION Shadowing-as-Cooling (cooler=0): " + (bc.cooler() > 0 && bc.warmer() >= 0) + "  (expected false)");
+    }
+
+    // ===== Tests: CO2Binding, Forestation, PlantBased, UrbanLandscaping (Vishwas) =====
+    // subtype objects are used over supertype references, the supertype's assertions must still hold
+    private static void testVishwas() {
+        TestCO2Binding moor = new TestCO2Binding("drained moor available", "carbon stays in the wet peat",
+                80000, 60, 1500, 2400);
+        TestForestation forest = new TestForestation("1000 ha of free land", "CO2 bound, rain water kept, cooler local climate",
+                3000000, 100, 25000, 90000, 800, "contiguous forest of 2500 ha north of Zwettl");
+        TestPlantBased flowers = new TestPlantBased("flowers can be bought", "decoration, a little evaporation", 60);
+        TestUrbanLandscaping street = new TestUrbanLandscaping("street is wide enough", "trees shade and cool the street",
+                250000, "Mariahilfer Strasse, Vienna", 2.5, 0.0, 400, 40, 8000);
+        TestUrbanLandscaping roof = new TestUrbanLandscaping("roof can carry the weight", "green roof cools by evaporation",
+                30000, "roof of a school in Graz", 1.2, 0.0, 90, 25, 600);
+
+        // CO2Binding: reduction() > 0 and duration() >= 10 (stronger than PermanentAction) for every CO2Binding
+        for (CO2Binding c : new CO2Binding[]{moor, forest}) {
+            System.out.println("CO2Binding: reduction=" + c.reduction() + "t duration=" + c.duration()
+                    + " -> " + (c.reduction() > 0 && c.duration() >= 10));
+        }
+
+        // PermanentAction assertions must also hold for all my permanent subtypes
+        PermanentAction[] permanent = {moor, forest, street, roof};
+        for (PermanentAction p : permanent) {
+            System.out.println("PermanentAction: " + p.expectations() + " | " + p.duration() + "y, annual " + p.annualCosts()
+                    + " -> " + (p.duration() >= 1 && p.annualCosts() >= 0 && p.costs() >= 0));
+        }
+
+        // PlantBased: short-lived (flowers) and long-lived (forest, trees) plants, only the Action assertions are required
+        PlantBased[] plants = {flowers, forest, street, roof};
+        for (PlantBased pb : plants) {
+            System.out.println("PlantBased: " + pb.precondition() + " | costs " + pb.costs() + " -> "
+                    + (!pb.precondition().isEmpty() && !pb.expectations().isEmpty() && pb.costs() >= 0));
+        }
+
+        // Forestation specific + used as CO2Binding
+        Forestation f = forest;
+        System.out.println("Forestation: " + f.forestationArea() + " ha in '" + f.area() + "' -> "
+                + (f.forestationArea() > 0 && !f.area().isEmpty()));
+        CO2Binding fc = forest;
+        System.out.println("Forestation as CO2Binding: " + fc.reduction() + "t over " + fc.duration() + "y");
+
+        // UrbanLandscaping used as EvaporativeCooling, Cooling and LocalAction
+        EvaporativeCooling ue = street;
+        System.out.println("UrbanLandscaping as EvaporativeCooling: warmer=" + ue.warmer() + " consumption=" + ue.consumption()
+                + " -> " + (ue.warmer() == 0.0 && ue.consumption() > 0));
+        Cooling uc = roof;
+        System.out.println("UrbanLandscaping as Cooling: cooler=" + uc.cooler() + " warmer=" + uc.warmer()
+                + " -> " + (uc.cooler() > 0 && uc.warmer() >= 0));
+        LocalAction ul = roof;
+        System.out.println("UrbanLandscaping as LocalAction: " + ul.area() + " -> " + !ul.area().isEmpty());
+
+        // history constraints: values stay the same after list operations on other objects
+        double reductionBefore = moor.reduction();
+        String areaBefore = forest.area();
+        Action first = flowers;
+        first.add(forest);            // flowers, forest
+        forest.add(street);           // flowers, forest, street
+        street.addBefore(moor);       // flowers, forest, moor, street
+        flowers.addBefore(roof);      // roof, flowers, forest, moor, street
+        System.out.println("list forward: " + (roof.next() == flowers && flowers.next() == forest
+                && forest.next() == moor && moor.next() == street && street.next() == null));
+        System.out.println("list backward: " + (street.previous() == moor && moor.previous() == forest
+                && forest.previous() == flowers && flowers.previous() == roof && roof.previous() == null));
+        forest.remove();              // roof, flowers, moor, street
+        System.out.println("after remove: " + (flowers.next() == moor && moor.previous() == flowers
+                && forest.next() == null && forest.previous() == null));
+        System.out.println("history constraint (reduction, area unchanged): "
+                + (moor.reduction() == reductionBefore && forest.area().equals(areaBefore)));
+
+        // VIOLATION demo: a "CO2Binding" that binds only 5 years is a valid PermanentAction,
+        // but not a valid CO2Binding (at least a decade) -> second line must print false
+        TestCO2Binding shortBinding = new TestCO2Binding("x", "y", 10, 5, 1, 100);
+        PermanentAction sp = shortBinding;
+        System.out.println("VIOLATION short CO2Binding as PermanentAction: " + (sp.duration() >= 1) + "  (expected true)");
+        CO2Binding sc = shortBinding;
+        System.out.println("VIOLATION short CO2Binding as CO2Binding: " + (sc.duration() >= 10) + "  (expected false)");
+
+        // VIOLATION demo: UrbanLandscaping that heats its surroundings is fine for Cooling,
+        // but violates EvaporativeCooling (warmer() == 0) -> must print false
+        TestUrbanLandscaping heating = new TestUrbanLandscaping("x", "y", 10, "park", 1.0, 0.5, 10, 5, 1);
+        EvaporativeCooling he = heating;
+        System.out.println("VIOLATION UrbanLandscaping as EvaporativeCooling (warmer=0.5): " + (he.warmer() == 0.0)
+                + "  (expected false)");
     }
 
     // ===== classes below are ONLY for testing =====
@@ -242,6 +351,41 @@ public class Test {
         private final String area; private final double cooler, warmer, consumption;
         TestGreenUmbrella(String pre, String exp, double costs, String area, double cooler, double warmer, double consumption) {
             super(pre, exp, costs); this.area = area; this.cooler = cooler; this.warmer = warmer; this.consumption = consumption;
+        }
+        public String area() { return area; }
+        public double cooler() { return cooler; }
+        public double warmer() { return warmer; }
+        public double consumption() { return consumption; }
+    }
+
+    private static class TestCO2Binding extends TestPermanent implements CO2Binding {
+        private final double reduction;
+        TestCO2Binding(String pre, String exp, double costs, int duration, double annual, double reduction) {
+            super(pre, exp, costs, duration, annual); this.reduction = reduction;
+        }
+        public double reduction() { return reduction; }
+    }
+
+    private static class TestForestation extends TestCO2Binding implements Forestation {
+        private final double forestationArea; private final String area;
+        TestForestation(String pre, String exp, double costs, int duration, double annual, double reduction,
+                        double forestationArea, String area) {
+            super(pre, exp, costs, duration, annual, reduction); this.forestationArea = forestationArea; this.area = area;
+        }
+        public double forestationArea() { return forestationArea; }
+        public String area() { return area; }
+    }
+
+    private static class TestPlantBased extends TestAction implements PlantBased {
+        TestPlantBased(String pre, String exp, double costs) { super(pre, exp, costs); }
+    }
+
+    private static class TestUrbanLandscaping extends TestPermanent implements UrbanLandscaping {
+        private final String area; private final double cooler, warmer, consumption;
+        TestUrbanLandscaping(String pre, String exp, double costs, String area, double cooler, double warmer,
+                             double consumption, int duration, double annual) {
+            super(pre, exp, costs, duration, annual);
+            this.area = area; this.cooler = cooler; this.warmer = warmer; this.consumption = consumption;
         }
         public String area() { return area; }
         public double cooler() { return cooler; }
