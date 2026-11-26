@@ -86,6 +86,19 @@ Dhananjay Sharma Use of Ai: Used Claude:
 
             UrbanLandscaping No Sub-Type of: Shadowing
                 Cause: Shadowing always shades a space where people spend time (transparency() > 0). UrbanLandscaping also includes greening of walls and roofs, which shades no such space (it cools by evaporation), so the Shadowing invariant cannot be guaranteed for ever UrbanLandscaping.
+            ImmediateAction No Sub-Type of: PermanentAction, CO2Binding, Forestation, Shadowing, UrbanLandscaping
+                Cause: effects of an ImmediateAction last less than a year, these types are lasting (>= 1 year), short-term and long-term exclude each other.
+            ImmediateAction, PermanentAction No Sub-Type of: LocalAction, Cooling, EvaporativeCooling, WaterSupply
+                Cause: their effects are not limited to a determinable local area. A PermanentAction can have worldwide effects (e.g. CO2Binding), an ImmediateAction can deal with "entirely different dangers", also worldwide ones.
+            ImmediateAction, PermanentAction, LocalAction, Cooling, EvaporativeCooling, Shadowing, WaterSupply No Sub-Type of: PlantBased
+                Cause: all of these can be purely technical without any plants (e.g. an air conditioner, spraying nozzles, a sun sail, a water pipeline).
+            Shadowing No Sub-Type of: CO2Binding, Forestation
+                Cause: Shadowing affects only a local space where people stay, CO2Binding/Forestation have worldwide effects. Forestation is also explicitly unsuitable for shading such spaces.
+            Shadowing, GreenUmbrella No Sub-Type of: WaterSupply
+                Cause: shading and cooling do not secure or add drinking water, so capacity() > 0 cannot be guaranteed. A GreenUmbrella even consumes water for evaporation.
+            WaterSupply No Sub-Type of: Cooling, EvaporativeCooling
+                Cause: securing drinking water (e.g. a pipeline or a tank) does not lower any temperature, so cooler() > 0 cannot be guaranteed.
+        General: if A is no Sub-Type of B, then A is also no Sub-Type of any Sub-Type of B (e.g. Cooling no Sub-Type of CO2Binding, so also not of Forestation).
 */
 
 
