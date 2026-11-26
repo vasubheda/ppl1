@@ -1,5 +1,3 @@
-package Aufgabe4;
-
 /*
  * ImmediateAction = immediate measure that is taken to reduce a serious danger
  * (of any kind, e.g. health-threatening heat, too little drinking water, ...)

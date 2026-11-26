@@ -1,4 +1,3 @@
-package Aufgabe4;
     /**
      * precondition: inherited: a measure may only be taken when precondition() holds, add(x) needs x!=null.
      * Invariant: cooler() > 0 cooling always lowers the temperature by a positive amount, warmer() >= 0 it may heat the near-outside (AC) or not (0) cannot be negative.

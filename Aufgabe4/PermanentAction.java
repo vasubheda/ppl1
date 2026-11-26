@@ -1,5 +1,3 @@
-package Aufgabe4;
-
 /*
  * Permanent Action is measure of any kind that aims at a long-lasting change of a current state.
  *

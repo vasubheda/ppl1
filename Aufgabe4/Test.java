@@ -88,7 +88,6 @@ Dhananjay Sharma Use of Ai: Used Claude:
                 Cause: Shadowing always shades a space where people spend time (transparency() > 0). UrbanLandscaping also includes greening of walls and roofs, which shades no such space (it cools by evaporation), so the Shadowing invariant cannot be guaranteed for ever UrbanLandscaping.
 */
 
-import Aufgabe4.*;
 
 
 

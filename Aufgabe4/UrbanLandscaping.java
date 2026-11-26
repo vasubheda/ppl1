@@ -1,5 +1,3 @@
-package Aufgabe4;
-
 /**
  * Part : Vishwas
  * This creates permanent green space in urban areas (trees in parks and streets, green facades, walls and roofs).

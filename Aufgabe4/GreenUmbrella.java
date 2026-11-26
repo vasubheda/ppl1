@@ -1,5 +1,3 @@
-package Aufgabe4;
-
 /**
  * Invariant: none
  * Invariant Inherited:

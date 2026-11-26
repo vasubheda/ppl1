@@ -1,5 +1,3 @@
-package Aufgabe4;
-
 /*
  * LocalAction is measure of any kind that affects a deterministic local area.
  *

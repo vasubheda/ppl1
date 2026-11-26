@@ -1,5 +1,3 @@
-package Aufgabe4;
-
 /**
  * Invariant: warmer() == 0, consumption() > 0.
  * Invariant Inherited: cooler() > 0, area() limited.

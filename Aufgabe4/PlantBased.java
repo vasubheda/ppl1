@@ -1,5 +1,3 @@
-package Aufgabe4;
-
 /**
  * Part : Vishwas
  * This is a measure that uses plants of any kind, short-lived (cut flowers) or long-lived (trees).

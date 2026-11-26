@@ -1,5 +1,3 @@
-package Aufgabe4;
-
 /**
  * Part : Vishwas
  * This is a measure that binds CO2 for a long time, so the carbon is no longer part of CO2 in the open air.

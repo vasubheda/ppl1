@@ -1,5 +1,3 @@
-package Aufgabe4;
-
 /*
  * Action is any measure that is taken
  * All measures form a doubly linked list ordered by time:

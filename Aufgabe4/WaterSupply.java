@@ -1,5 +1,3 @@
-package Aufgabe4;
-
 /*
  * WaterSupply is measure to improve or having drinking-water supply of a limited area.
  * How fast it takes effect does not matter (hours, days or only after years).

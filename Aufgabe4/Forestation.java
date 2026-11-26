@@ -1,5 +1,3 @@
-package Aufgabe4;
-
 /**
  * Part : Vishwas
  * This is afforestation that creates a large, contiguous forest (never the whole world).
